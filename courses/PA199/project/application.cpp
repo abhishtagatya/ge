@@ -10,6 +10,8 @@
 #include "lodepng.h"
 #include <filesystem>
 #include <iostream>
+#include <iomanip>
+#include "mathlib/vector.hpp"
 
 static GLuint load_shader(std::filesystem::path const& path, GLenum const shader_type)
 {
@@ -124,6 +126,14 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
     glViewport(0, 0, width, height);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	mathlib::Vector<float, 3> a{ {1.0f, 2.0f, 3.0f} };
+	mathlib::Vector<int, 3> b{ {4.0f, 5.0f, 6.0f} };
+
+	//std::cout << a[0] << std::endl;
+	//std::cout << b[0] << std::endl;
+	//std::cout << (a + b).size() << std::endl;
+	std::cout << std::setprecision(15) << a.magnitude() << std::endl;
 }
 
 Application::~Application()
@@ -158,6 +168,8 @@ void Application::render() {
     assert(glGetError() == 0U);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     assert(glGetError() == 0U);
+
+
 }
 
 void Application::render_ui() {}

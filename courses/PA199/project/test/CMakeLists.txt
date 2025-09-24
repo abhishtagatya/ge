@@ -5,7 +5,7 @@
 find_package(GTest CONFIG REQUIRED)
 
 add_executable(PA199_project_tests
-    "some_test.cpp" # This includes the tutorial file. Can be removed.
+    "mathlib_test.cpp" # This includes the tutorial file. Can be removed.
     )
 
 # Search and ling with 3rd party libraries
@@ -16,7 +16,7 @@ target_link_libraries(PA199_project_tests PUBLIC
   GTest::gtest GTest::gtest_main lodepng glad::glad glfw
 
   # Here add libraries you want to write tests for.
-  some_my_library # This includes the tutorial library. Can be removed.
+  mathlib # This includes the tutorial library. Can be removed.
 )
 
 # Exposes the test (e.g., for Visual Studio).

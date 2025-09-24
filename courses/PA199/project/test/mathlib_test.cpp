@@ -1,7 +1,7 @@
-// This is a tutorial file. Feel free to remove it.
-
-#include "../some_my_library_dir/some_library_file.hpp"
+#include "../mathlib/vector.hpp"
 #include <gtest/gtest.h>
+
+/*
 
 TEST(some_test_suite, some_test)
 {
@@ -12,3 +12,5 @@ TEST(some_test_suite, another_test)
 {
     EXPECT_EQ(some_lib::some_my_library_function(3), 6) << "2*3==6.";
 }
+
+*/
