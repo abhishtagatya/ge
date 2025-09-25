@@ -418,3 +418,75 @@ TEST(mathlib_vector_test_suite, v_magnitude_test) {
 	mathlib::Vector<int, 4> v4{ 1, 2, 2, 1 };
 	EXPECT_FLOAT_EQ(3, v4.magnitude()); // Rounding due to int type (EXPECTED)
 }
+
+TEST(mathlib_vector_test_suite, v_normalize_test) {
+	mathlib::Vector<float, 1> v1{ 3.0f };
+	auto n1 = v1.normalize();
+	EXPECT_FLOAT_EQ(1.0f, n1[0]);
+
+    mathlib::Vector<float, 2> v2{ 3.0f, 4.0f };
+    auto nv2 = v2.normalize();
+    EXPECT_FLOAT_EQ(0.6f, nv2[0]);
+    EXPECT_FLOAT_EQ(0.8f, nv2[1]);
+    EXPECT_FLOAT_EQ(1.0f, nv2.magnitude());
+    
+    mathlib::Vector<float, 3> v3{ 3.0f, 4.0f, 0.0f };
+    auto nv3 = v3.normalize();
+    EXPECT_FLOAT_EQ(0.6f, nv3[0]);
+    EXPECT_FLOAT_EQ(0.8f, nv3[1]);
+    EXPECT_FLOAT_EQ(0.0f, nv3[2]);
+    EXPECT_FLOAT_EQ(1.0f, nv3.magnitude());
+    
+    mathlib::Vector<float, 4> v4{ 1, 1, 1, 1 };
+    auto nv4 = v4.normalize();
+    EXPECT_FLOAT_EQ(0.5f, nv4[0]);
+    EXPECT_FLOAT_EQ(0.5f, nv4[1]);
+    EXPECT_FLOAT_EQ(0.5f, nv4[2]);
+    EXPECT_FLOAT_EQ(0.5f, nv4[3]);
+	EXPECT_FLOAT_EQ(1.0f, nv4.magnitude());
+}
+
+TEST(mathlib_vector_test_suite, v_negate_test) {
+    mathlib::Vector<float, 3> v{ 1.0f, -2.0f, 3.0f };
+    auto n = -v;
+    EXPECT_FLOAT_EQ(-1.0f, n[0]);
+    EXPECT_FLOAT_EQ(2.0f, n[1]);
+	EXPECT_FLOAT_EQ(-3.0f, n[2]);
+
+	auto nn = n.negate();
+    EXPECT_FLOAT_EQ(v[0], nn[0]);
+    EXPECT_FLOAT_EQ(v[1], nn[1]);
+	EXPECT_FLOAT_EQ(v[2], nn[2]);
+}
+
+TEST(mathlib_vector_test_suite, v_dot_test) {
+    mathlib::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
+    mathlib::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
+
+    float expected_dot = 32.0f;
+    float result_dot = v1.dot(v2);
+    EXPECT_FLOAT_EQ(expected_dot, result_dot);
+
+    // Commutativity check
+    float result_dot_comm = v2.dot(v1);
+    EXPECT_FLOAT_EQ(expected_dot, result_dot_comm);
+}
+
+TEST(mathlib_vector_test_suite, v_cross_test) {
+    mathlib::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
+    mathlib::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
+    mathlib::Vector<float, 3> expected_cross{ -3.0f, 6.0f, -3.0f };
+    
+    auto result_cross = v1.cross(v2);
+    EXPECT_EQ(result_cross.size(), expected_cross.size());
+    for (size_t i = 0; i < result_cross.size(); ++i) {
+        EXPECT_FLOAT_EQ(result_cross[i], expected_cross[i]);
+    }
+
+    // Non Commutativity check
+    auto result_cross_comm = v2.cross(v1);
+    EXPECT_EQ(result_cross_comm.size(), expected_cross.size());
+    for (size_t i = 0; i < result_cross_comm.size(); ++i) {
+        EXPECT_FLOAT_EQ(result_cross_comm[i], -expected_cross[i]);
+    }
+}

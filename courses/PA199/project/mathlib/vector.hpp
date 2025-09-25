@@ -90,19 +90,59 @@ namespace mathlib {
 			return result;
 		}
 
+		// NEGATION OPERATOR & FUNCTION
+		// -------------------------------
+
+		Vector<T, N> operator-() const {
+			Vector<T, N> result;
+			VectorMulScalar<N>::compute(data, -1, result.data);
+			return result;
+		}
+
+		// Returns the negated version of the vector
+		Vector<T, N> negate() const {
+			return -*this;
+		}
+
+		// DOT PRODUCT FUNCTION
+		// -------------------------------
+
+		// Returns the dot product of this vector with another vector
+		T dot(const Vector<T, N>& other) const {
+			return VectorDotProduct<N>::compute(data, other.data);
+		}
+
+		// CROSS PRODUCT FUNCTION (Only for 3D Vectors)
+		// -------------------------------
+
+		// Returns the cross product of this vector with another vector (only for 3D vectors)
+		Vector<T, 3> cross(const Vector<T, 3>& other) const {
+			static_assert(N == 3, "MATHLIB: Cross product is only defined for 3D vectors.");
+			Vector<T, 3> result;
+			result[0] = data[1] * other.data[2] - data[2] * other.data[1];
+			result[1] = data[2] * other.data[0] - data[0] * other.data[2];
+			result[2] = data[0] * other.data[1] - data[1] * other.data[0];
+			return result;
+		}
+
 		// VECTOR FUNCTIONS
 		// -------------------------------
 
+		// Returns the magnitude (length) of the vector
 		T magnitude() const {
 			return std::sqrt(VectorSquareSum<N>::compute(data));
 		}
 
-		// TODO: Unit Vector -> Normalize
-		// TODO: Copy by Value -> Copy Function
-		// TODO: Opposite Vector -> Negate Function
-		// QUESTION: Cross Product -> Only for up to 4D Vectors? Should I make it special template for each?
-		//-> Solution : Make a special template for 3D Vectors only for Cross Product and leave others without it.
-		// QUESTION: How is this structure generally?
+		// Returns a normalized (unit length) version of the vector
+		Vector<T, N> normalize() const {
+			T mag = magnitude();
+			if (mag == 0) return *this;
+
+			Vector<T, N> result;
+			VectorDivScalar<N>::compute(data, mag, result.data);
+
+			return result;
+		}
 
 		size_t size() const { return N; }
 
@@ -291,6 +331,22 @@ namespace mathlib {
 		struct VectorSquareSum<1> {
 			static inline T compute(const T* a) {
 				return a[0] * a[0];
+			}
+		};
+
+		// Template for Vector Dot Product Cases
+		template<size_t N>
+		struct VectorDotProduct {
+			static inline T compute(const T* a, const T* b) {
+				return a[N - 1] * b[N - 1] + VectorDotProduct<N - 1>::compute(a, b);
+			}
+		};
+
+		// Template for Vector Dot Product Cases (Base Case)
+		template<>
+		struct VectorDotProduct<1> {
+			static inline T compute(const T* a, const T* b) {
+				return a[0] * b[0];
 			}
 		};
 	};
