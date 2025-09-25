@@ -128,12 +128,17 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	mathlib::Vector<float, 3> a{ {1.0f, 2.0f, 3.0f} };
-	mathlib::Vector<int, 3> b{ {4.0f, 5.0f, 6.0f} };
+	mathlib::Vector<float, 3> b{ {4.0f, 5.0f, 6.0f} };
 
 	//std::cout << a[0] << std::endl;
 	//std::cout << b[0] << std::endl;
 	//std::cout << (a + b).size() << std::endl;
-	std::cout << std::setprecision(15) << a.magnitude() << std::endl;
+	std::cout << (0.5f + a)[0] << std::endl;
+	std::cout << (1.2f - b)[0] << std::endl;
+	std::cout << b[0] << std::endl;
+	std::cout << ((1.2f / b) / 1.2f)[1] << std::endl;
+	std::cout << (1.2f / b)[1] << std::endl;
+	std::cout << "A" << std::endl;
 }
 
 Application::~Application()
