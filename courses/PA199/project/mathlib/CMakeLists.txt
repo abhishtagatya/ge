@@ -3,7 +3,9 @@
 add_library(mathlib
     "vector.hpp"
     "vector.cpp"
-    )
+    "matrix.hpp"
+    "matrix.cpp"
+)
 
 # (optional) Search and ling with 3rd party libraries
 find_package(glfw3 CONFIG REQUIRED)
