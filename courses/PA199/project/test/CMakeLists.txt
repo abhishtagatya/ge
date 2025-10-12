@@ -6,7 +6,7 @@ find_package(GTest CONFIG REQUIRED)
 
 add_executable(PA199_project_tests
     "mathlib_vector_test.cpp" # This includes the tutorial file. Can be removed.
-     "mathlib_matrix_test.cpp")
+     "mathlib_matrix_test.cpp" "mathlib_quaternion_test.cpp")
 
 # Search and ling with 3rd party libraries
 find_package(glfw3 CONFIG REQUIRED)
