@@ -3,7 +3,7 @@
 #include <cmath>
 #include <array>
 
-namespace mathlib {
+namespace gem {
 	template<typename T, size_t N>
 	struct Vector {
 		T data[N];
@@ -118,7 +118,7 @@ namespace mathlib {
 
 		// Returns the cross product of this vector with another vector (only for 3D vectors)
 		Vector<T, 3> cross(const Vector<T, 3>& other) const {
-			static_assert(N == 3, "MATHLIB: Cross product is only defined for 3D vectors.");
+			static_assert(N == 3, "gem: Cross product is only defined for 3D vectors.");
 			Vector<T, 3> result;
 			result[0] = data[1] * other.data[2] - data[2] * other.data[1];
 			result[1] = data[2] * other.data[0] - data[0] * other.data[2];

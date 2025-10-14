@@ -1,3 +1,3 @@
 #include "vector.hpp"
 
-namespace mathlib {}
+namespace gem {}

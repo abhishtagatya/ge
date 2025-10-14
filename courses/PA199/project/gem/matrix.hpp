@@ -4,7 +4,7 @@
 #include <cmath>
 #include <array>
 
-namespace mathlib {
+namespace gem {
 	template <typename T, size_t N>
 	struct Vector; // Forward declaration
 
@@ -65,6 +65,41 @@ namespace mathlib {
 			result.data[0][3] = v[0];
 			result.data[1][3] = v[1];
 			result.data[2][3] = v[2];
+			return result;
+		}
+
+		static Matrix4 scale(const Vector<T, 3>& v) {
+			Matrix4<T> result = identity();
+			result.data[0][0] = v[0];
+			result.data[1][1] = v[1];
+			result.data[2][2] = v[2];
+			return result;
+		}
+
+		static Matrix4 rotationX(T angle) {
+			Matrix4<T> result = identity();
+			T c = std::cos(angle);
+			T s = std::sin(angle);
+			result.data[1][1] = c;  result.data[1][2] = -s;
+			result.data[2][1] = s;  result.data[2][2] = c;
+			return result;
+		}
+
+		static Matrix4 rotationY(T angle) {
+			Matrix4<T> result = identity();
+			T c = std::cos(angle);
+			T s = std::sin(angle);
+			result.data[0][0] = c;  result.data[0][2] = s;
+			result.data[2][0] = -s; result.data[2][2] = c;
+			return result;
+		}
+
+		static Matrix4 rotationZ(T angle) {
+			Matrix4<T> result = identity();
+			T c = std::cos(angle);
+			T s = std::sin(angle);
+			result.data[0][0] = c;  result.data[0][1] = -s;
+			result.data[1][0] = s;  result.data[1][1] = c;
 			return result;
 		}
 

@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace mathlib {
+namespace gem {
 	template <typename T, size_t N>
 	struct Vector; // Forward declaration
 
@@ -15,7 +15,11 @@ namespace mathlib {
 
 		AxisAngle() : data{ 0, 0, 0, 0 } {}
 		AxisAngle(T angle, T x, T y, T z) : data{ angle, x, y, z } {
-			data = data.normalize();
+			Vector<T, 3> ax{ x, y, z };
+			ax = ax.normalize();
+			data[1] = ax[0];
+			data[2] = ax[1];
+			data[3] = ax[2];
 		}
 
 		T angle() const { return data[0]; }
@@ -24,6 +28,7 @@ namespace mathlib {
 		Quaternion<T> toQuaternion() const {
 			T half_angle = angle() * static_cast<T>(0.5);
 			T s = std::sin(half_angle);
+
 			return Quaternion<T>(
 				std::cos(half_angle),
 				axis()[0] * s,

@@ -1,10 +1,11 @@
-#include "../mathlib/vector.hpp"
+#include "../../gem/vector.hpp"
+#include "../../gem/interpolation.hpp"
 #include <gtest/gtest.h>
 
-// Basic tests for mathlib::Vector
-TEST(mathlib_vector_test_suite, v_basic_test) {
-	mathlib::Vector<float, 3> v{ 1.0f, 2.0f, 3.0f };
-	mathlib::Vector<int, 3> vi{ 1, 2, 3 };
+// Basic tests for gem::Vector
+TEST(gem_vector_test_suite, v_basic_test) {
+	gem::Vector<float, 3> v{ 1.0f, 2.0f, 3.0f };
+	gem::Vector<int, 3> vi{ 1, 2, 3 };
 
 	// Access via operator[]
 	EXPECT_EQ(v[0], 1.0f);
@@ -38,13 +39,13 @@ TEST(mathlib_vector_test_suite, v_basic_test) {
 }
 
 // Test for vector-and-vector addition
-TEST(mathlib_vector_test_suite, vnv_add_test) {
-    mathlib::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
-    mathlib::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
-	mathlib::Vector<float, 3> v3{ 7.0f, 8.0f, 9.0f };
+TEST(gem_vector_test_suite, vnv_add_test) {
+    gem::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
+    gem::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
+	gem::Vector<float, 3> v3{ 7.0f, 8.0f, 9.0f };
 
-    mathlib::Vector<float, 3> expected_v1v2{ 5.0f, 7.0f, 9.0f };
-	mathlib::Vector<float, 3> expected_v1v2v3{ 12.0f, 15.0f, 18.0f };
+    gem::Vector<float, 3> expected_v1v2{ 5.0f, 7.0f, 9.0f };
+	gem::Vector<float, 3> expected_v1v2v3{ 12.0f, 15.0f, 18.0f };
     
 	// Vector + Vector
     auto result_v1v2 = v1 + v2;
@@ -81,12 +82,12 @@ TEST(mathlib_vector_test_suite, vnv_add_test) {
 }
 
 // Test for vector-and-scalar addition
-TEST(mathlib_vector_test_suite, vns_add_test) {
-    mathlib::Vector<float, 3> v{ 1.0f, 2.0f, 3.0f };
+TEST(gem_vector_test_suite, vns_add_test) {
+    gem::Vector<float, 3> v{ 1.0f, 2.0f, 3.0f };
 	float s = 5.0f;
 
-    mathlib::Vector<float, 3> expected_vs{ 6.0f, 7.0f, 8.0f };
-	mathlib::Vector<float, 3> expected_vss{ 7.0f, 9.0f, 11.0f };
+    gem::Vector<float, 3> expected_vs{ 6.0f, 7.0f, 8.0f };
+	gem::Vector<float, 3> expected_vss{ 7.0f, 9.0f, 11.0f };
 
     // Vector + Vector
     auto result_vs = v + s;
@@ -123,16 +124,16 @@ TEST(mathlib_vector_test_suite, vns_add_test) {
 }
 
 // Test for vector-and-vector subtraction
-TEST(mathlib_vector_test_suite, vnv_sub_test) {
-    mathlib::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
-    mathlib::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
-    mathlib::Vector<float, 3> v3{ 7.0f, 8.0f, 9.0f };
+TEST(gem_vector_test_suite, vnv_sub_test) {
+    gem::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
+    gem::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
+    gem::Vector<float, 3> v3{ 7.0f, 8.0f, 9.0f };
 
-    mathlib::Vector<float, 3> expected_v1v2{ -3.0f, -3.0f, -3.0f };
-    mathlib::Vector<float, 3> expected_v2v1{ 3.0f, 3.0f, 3.0f };
+    gem::Vector<float, 3> expected_v1v2{ -3.0f, -3.0f, -3.0f };
+    gem::Vector<float, 3> expected_v2v1{ 3.0f, 3.0f, 3.0f };
 
-    mathlib::Vector<float, 3> expected_v1v2v3{ 4.0f, 5.0f, 6.0f };
-    mathlib::Vector<float, 3> expected_v1v2v3_b{ -10.0f, -11.0f, -12.0f };
+    gem::Vector<float, 3> expected_v1v2v3{ 4.0f, 5.0f, 6.0f };
+    gem::Vector<float, 3> expected_v1v2v3_b{ -10.0f, -11.0f, -12.0f };
 
     // Vector + Vector
     auto result_v1v2 = v1 - v2;
@@ -173,15 +174,15 @@ TEST(mathlib_vector_test_suite, vnv_sub_test) {
 }
 
 // Test for vector-and-scalar subtraction
-TEST(mathlib_vector_test_suite, vns_sub_test) {
-    mathlib::Vector<float, 3> v{ 1.0f, 2.0f, 3.0f };
+TEST(gem_vector_test_suite, vns_sub_test) {
+    gem::Vector<float, 3> v{ 1.0f, 2.0f, 3.0f };
     float s = 5.0f;
 
-    mathlib::Vector<float, 3> expected_vs{ -4.0f, -3.0f, -2.0f };
-    mathlib::Vector<float, 3> expected_sv{ 4.0f, 3.0f, 2.0f };
+    gem::Vector<float, 3> expected_vs{ -4.0f, -3.0f, -2.0f };
+    gem::Vector<float, 3> expected_sv{ 4.0f, 3.0f, 2.0f };
 
-    mathlib::Vector<float, 3> expected_vss{ -3.0f, -1.0f, 1.0f };
-    mathlib::Vector<float, 3> expected_vss_b{ -5.0f, -5.0f, -5.0f };
+    gem::Vector<float, 3> expected_vss{ -3.0f, -1.0f, 1.0f };
+    gem::Vector<float, 3> expected_vss_b{ -5.0f, -5.0f, -5.0f };
 
     // Vector + Vector
     auto result_vs = v - s;
@@ -222,13 +223,13 @@ TEST(mathlib_vector_test_suite, vns_sub_test) {
 }
 
 // Test for vector-and-vector multiplication
-TEST(mathlib_vector_test_suite, vnv_mul_test) {
-    mathlib::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
-    mathlib::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
-    mathlib::Vector<float, 3> v3{ 7.0f, 8.0f, 9.0f };
+TEST(gem_vector_test_suite, vnv_mul_test) {
+    gem::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
+    gem::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
+    gem::Vector<float, 3> v3{ 7.0f, 8.0f, 9.0f };
 
-    mathlib::Vector<float, 3> expected_v1v2{ 4.0f, 10.0f, 18.0f };
-    mathlib::Vector<float, 3> expected_v1v2v3{ 28.0f, 80.0f, 162.0f };
+    gem::Vector<float, 3> expected_v1v2{ 4.0f, 10.0f, 18.0f };
+    gem::Vector<float, 3> expected_v1v2v3{ 28.0f, 80.0f, 162.0f };
 
     // Vector + Vector
     auto result_v1v2 = v1 * v2;
@@ -265,12 +266,12 @@ TEST(mathlib_vector_test_suite, vnv_mul_test) {
 }
 
 // Test for vector-and-scalar multiplication
-TEST(mathlib_vector_test_suite, vns_mul_test) {
-    mathlib::Vector<float, 3> v{ 1.0f, 2.0f, 3.0f };
+TEST(gem_vector_test_suite, vns_mul_test) {
+    gem::Vector<float, 3> v{ 1.0f, 2.0f, 3.0f };
     float s = 5.0f;
 
-    mathlib::Vector<float, 3> expected_vs{ 5.0f, 10.0f, 15.0f };
-    mathlib::Vector<float, 3> expected_vss{ 5.0f, 20.0f, 45.0f };
+    gem::Vector<float, 3> expected_vs{ 5.0f, 10.0f, 15.0f };
+    gem::Vector<float, 3> expected_vss{ 5.0f, 20.0f, 45.0f };
 
     // Vector + Vector
     auto result_vs = v * s;
@@ -307,16 +308,16 @@ TEST(mathlib_vector_test_suite, vns_mul_test) {
 }
 
 // Test for vector-and-vector division
-TEST(mathlib_vector_test_suite, vnv_div_test) {
-    mathlib::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
-    mathlib::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
-    mathlib::Vector<float, 3> v3{ 7.0f, 8.0f, 9.0f };
+TEST(gem_vector_test_suite, vnv_div_test) {
+    gem::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
+    gem::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
+    gem::Vector<float, 3> v3{ 7.0f, 8.0f, 9.0f };
 
-    mathlib::Vector<float, 3> expected_v1v2{ 0.25f, 0.4f, 0.5f };
-    mathlib::Vector<float, 3> expected_v2v1{ 4.0f, 2.5f, 2.0f };
+    gem::Vector<float, 3> expected_v1v2{ 0.25f, 0.4f, 0.5f };
+    gem::Vector<float, 3> expected_v2v1{ 4.0f, 2.5f, 2.0f };
 
-    mathlib::Vector<float, 3> expected_v1v2v3{ 1.0f / (4.0f/7.0f), 2.0f / (5.0f / 8.0f), 3.0f / (6.0f / 9.0f) };
-    mathlib::Vector<float, 3> expected_v1v2v3_b{ (1.0f / 4.0f) / 7.0f, (2.0f / 5.0f) / 8.0f, (3.0f / 6.0f) / 9.0f };
+    gem::Vector<float, 3> expected_v1v2v3{ 1.0f / (4.0f/7.0f), 2.0f / (5.0f / 8.0f), 3.0f / (6.0f / 9.0f) };
+    gem::Vector<float, 3> expected_v1v2v3_b{ (1.0f / 4.0f) / 7.0f, (2.0f / 5.0f) / 8.0f, (3.0f / 6.0f) / 9.0f };
 
     // Vector + Vector
     auto result_v1v2 = v1 / v2;
@@ -357,15 +358,15 @@ TEST(mathlib_vector_test_suite, vnv_div_test) {
 }
 
 // Test for vector-and-scalar division
-TEST(mathlib_vector_test_suite, vns_div_test) {
-    mathlib::Vector<float, 3> v{ 1.0f, 2.0f, 3.0f };
+TEST(gem_vector_test_suite, vns_div_test) {
+    gem::Vector<float, 3> v{ 1.0f, 2.0f, 3.0f };
     float s = 5.0f;
 
-    mathlib::Vector<float, 3> expected_vs{ 0.2f, 0.4f, 0.6f };
-    mathlib::Vector<float, 3> expected_sv{ 5.0f, 2.5f, 1.6666666f };
+    gem::Vector<float, 3> expected_vs{ 0.2f, 0.4f, 0.6f };
+    gem::Vector<float, 3> expected_sv{ 5.0f, 2.5f, 1.6666666f };
 
-    mathlib::Vector<float, 3> expected_vss{ 1.0f / (5.0f / 1.0f), 2.0f / (5.0f / 2.0f), 3.0f / (5.0f / 3.0f) };
-    mathlib::Vector<float, 3> expected_vss_b{ (1.0 / 5.0f) / 1.0f, (2.0 / 5.0f) / 2.0f, (3.0 / 5.0f) / 3.0f };
+    gem::Vector<float, 3> expected_vss{ 1.0f / (5.0f / 1.0f), 2.0f / (5.0f / 2.0f), 3.0f / (5.0f / 3.0f) };
+    gem::Vector<float, 3> expected_vss_b{ (1.0 / 5.0f) / 1.0f, (2.0 / 5.0f) / 2.0f, (3.0 / 5.0f) / 3.0f };
 
     // Vector + Vector
     auto result_vs = v / s;
@@ -405,39 +406,39 @@ TEST(mathlib_vector_test_suite, vns_div_test) {
     }
 }
 
-TEST(mathlib_vector_test_suite, v_magnitude_test) {
-	mathlib::Vector<float, 1> v1{ 3.0f };
+TEST(gem_vector_test_suite, v_magnitude_test) {
+	gem::Vector<float, 1> v1{ 3.0f };
 	EXPECT_FLOAT_EQ(3.0f, v1.magnitude());
 
-	mathlib::Vector<float, 2> v2{ 3.0f, 4.0f };
+	gem::Vector<float, 2> v2{ 3.0f, 4.0f };
 	EXPECT_FLOAT_EQ(5.0f, v2.magnitude());
     
-    mathlib::Vector<float, 3> v3{ 3.0f, 4.0f, 0.0f };
+    gem::Vector<float, 3> v3{ 3.0f, 4.0f, 0.0f };
 	EXPECT_FLOAT_EQ(5.0f, v3.magnitude());
 
-	mathlib::Vector<int, 4> v4{ 1, 2, 2, 1 };
+	gem::Vector<int, 4> v4{ 1, 2, 2, 1 };
 	EXPECT_FLOAT_EQ(3, v4.magnitude()); // Rounding due to int type (EXPECTED)
 }
 
-TEST(mathlib_vector_test_suite, v_normalize_test) {
-	mathlib::Vector<float, 1> v1{ 3.0f };
+TEST(gem_vector_test_suite, v_normalize_test) {
+	gem::Vector<float, 1> v1{ 3.0f };
 	auto n1 = v1.normalize();
 	EXPECT_FLOAT_EQ(1.0f, n1[0]);
 
-    mathlib::Vector<float, 2> v2{ 3.0f, 4.0f };
+    gem::Vector<float, 2> v2{ 3.0f, 4.0f };
     auto nv2 = v2.normalize();
     EXPECT_FLOAT_EQ(0.6f, nv2[0]);
     EXPECT_FLOAT_EQ(0.8f, nv2[1]);
     EXPECT_FLOAT_EQ(1.0f, nv2.magnitude());
     
-    mathlib::Vector<float, 3> v3{ 3.0f, 4.0f, 0.0f };
+    gem::Vector<float, 3> v3{ 3.0f, 4.0f, 0.0f };
     auto nv3 = v3.normalize();
     EXPECT_FLOAT_EQ(0.6f, nv3[0]);
     EXPECT_FLOAT_EQ(0.8f, nv3[1]);
     EXPECT_FLOAT_EQ(0.0f, nv3[2]);
     EXPECT_FLOAT_EQ(1.0f, nv3.magnitude());
     
-    mathlib::Vector<float, 4> v4{ 1, 1, 1, 1 };
+    gem::Vector<float, 4> v4{ 1, 1, 1, 1 };
     auto nv4 = v4.normalize();
     EXPECT_FLOAT_EQ(0.5f, nv4[0]);
     EXPECT_FLOAT_EQ(0.5f, nv4[1]);
@@ -446,8 +447,8 @@ TEST(mathlib_vector_test_suite, v_normalize_test) {
 	EXPECT_FLOAT_EQ(1.0f, nv4.magnitude());
 }
 
-TEST(mathlib_vector_test_suite, v_negate_test) {
-    mathlib::Vector<float, 3> v{ 1.0f, -2.0f, 3.0f };
+TEST(gem_vector_test_suite, v_negate_test) {
+    gem::Vector<float, 3> v{ 1.0f, -2.0f, 3.0f };
     auto n = -v;
     EXPECT_FLOAT_EQ(-1.0f, n[0]);
     EXPECT_FLOAT_EQ(2.0f, n[1]);
@@ -459,9 +460,9 @@ TEST(mathlib_vector_test_suite, v_negate_test) {
 	EXPECT_FLOAT_EQ(v[2], nn[2]);
 }
 
-TEST(mathlib_vector_test_suite, v_dot_test) {
-    mathlib::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
-    mathlib::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
+TEST(gem_vector_test_suite, v_dot_test) {
+    gem::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
+    gem::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
 
     float expected_dot = 32.0f;
     float result_dot = v1.dot(v2);
@@ -472,10 +473,10 @@ TEST(mathlib_vector_test_suite, v_dot_test) {
     EXPECT_FLOAT_EQ(expected_dot, result_dot_comm);
 }
 
-TEST(mathlib_vector_test_suite, v_cross_test) {
-    mathlib::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
-    mathlib::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
-    mathlib::Vector<float, 3> expected_cross{ -3.0f, 6.0f, -3.0f };
+TEST(gem_vector_test_suite, v_cross_test) {
+    gem::Vector<float, 3> v1{ 1.0f, 2.0f, 3.0f };
+    gem::Vector<float, 3> v2{ 4.0f, 5.0f, 6.0f };
+    gem::Vector<float, 3> expected_cross{ -3.0f, 6.0f, -3.0f };
     
     auto result_cross = v1.cross(v2);
     EXPECT_EQ(result_cross.size(), expected_cross.size());
@@ -489,4 +490,27 @@ TEST(mathlib_vector_test_suite, v_cross_test) {
     for (size_t i = 0; i < result_cross_comm.size(); ++i) {
         EXPECT_FLOAT_EQ(result_cross_comm[i], -expected_cross[i]);
     }
+}
+
+TEST(gem_vector_test_suite, v_lerp_test) {
+    gem::Vector<float, 3> v1{ 3.0f, 4.0f, 0.0f };
+    gem::Vector<float, 3> v2{ 5.0f, 0.0f, 0.0f };
+    
+	auto result_0 = lerp(v1, v2, 0.0f);
+    EXPECT_EQ(result_0.size(), v1.size());
+    for (size_t i = 0; i < result_0.size(); ++i) {
+        EXPECT_FLOAT_EQ(result_0[i], v1[i]);
+	}
+
+    auto result_1 = lerp(v1, v2, 1.0f);
+    EXPECT_EQ(result_1.size(), v1.size());
+    for (size_t i = 0; i < result_1.size(); ++i) {
+        EXPECT_FLOAT_EQ(result_1[i], v2[i]);
+    }
+
+    auto result_05 = lerp(v1, v2, 0.5f);
+    EXPECT_EQ(result_05.size(), v1.size());
+    EXPECT_FLOAT_EQ(4.0f, result_05[0]);
+    EXPECT_FLOAT_EQ(2.0f, result_05[1]);
+	EXPECT_FLOAT_EQ(0.0f, result_05[2]);
 }

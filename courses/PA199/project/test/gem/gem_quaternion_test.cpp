@@ -1,12 +1,13 @@
-#include "../mathlib/unit.hpp"
-#include "../mathlib/vector.hpp"
-#include "../mathlib/axis_angle.hpp"
-#include "../mathlib/quaternion.hpp"
+#include "../../gem/vector.hpp"
+#include "../../gem/axis_angle.hpp"
+#include "../../gem/quaternion.hpp"
+#include "../../gem/interpolation.hpp"
 #include <gtest/gtest.h>
+#include <cmath>
 
-// Basic tests for mathlib::Quaternion
-TEST(mathlib_quaternion_test_suite, q_basic_test) {
-	mathlib::Quaternion<float> q1;
+// Basic tests for gem::Quaternion
+TEST(gem_quaternion_test_suite, q_basic_test) {
+	gem::Quaternion<float> q1;
 
 	EXPECT_FLOAT_EQ(q1[0], 1.0f);
 	EXPECT_FLOAT_EQ(q1[1], 0.0f);
@@ -18,7 +19,7 @@ TEST(mathlib_quaternion_test_suite, q_basic_test) {
 	EXPECT_FLOAT_EQ(q1.y(), 0.0f);
 	EXPECT_FLOAT_EQ(q1.z(), 0.0f);
 
-	mathlib::Quaternion<float> q2(0.0f, 1.0f, 2.0f, 3.0f);
+	gem::Quaternion<float> q2(0.0f, 1.0f, 2.0f, 3.0f);
 	EXPECT_FLOAT_EQ(q2[0], 0.0f);
 	EXPECT_FLOAT_EQ(q2[1], 1.0f);
 	EXPECT_FLOAT_EQ(q2[2], 2.0f);
@@ -29,8 +30,8 @@ TEST(mathlib_quaternion_test_suite, q_basic_test) {
 	EXPECT_FLOAT_EQ(q2.y(), 2.0f);
 	EXPECT_FLOAT_EQ(q2.z(), 3.0f);
 
-	mathlib::Vector<float, 4> v = { 4.0f, 5.0f, 6.0f, 7.0f };
-	mathlib::Quaternion<float> q3(v);
+	gem::Vector<float, 4> v = { 4.0f, 5.0f, 6.0f, 7.0f };
+	gem::Quaternion<float> q3(v);
 
 	EXPECT_FLOAT_EQ(q3[0], 4.0f);
 	EXPECT_FLOAT_EQ(q3[1], 5.0f);
@@ -39,9 +40,9 @@ TEST(mathlib_quaternion_test_suite, q_basic_test) {
 }
 
 // Test for quaternion-and-quaternon addition
-TEST(mathlib_quaternion_test_suite, qnq_add_test) {
-	mathlib::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
-	mathlib::Quaternion<float> q2(5.0f, 6.0f, 7.0f, 8.0f);
+TEST(gem_quaternion_test_suite, qnq_add_test) {
+	gem::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
+	gem::Quaternion<float> q2(5.0f, 6.0f, 7.0f, 8.0f);
 
 	// Quaternion + Quaternion
 	auto result_q1q2 = q1 + q2;
@@ -70,8 +71,8 @@ TEST(mathlib_quaternion_test_suite, qnq_add_test) {
 }
 
 // Test for quaternion-and-scalar addition
-TEST(mathlib_quaternion_test_suite, qns_add_test) {
-	mathlib::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
+TEST(gem_quaternion_test_suite, qns_add_test) {
+	gem::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
 	float s = 5.0f;
 
 	// Quaternion + Quaternion
@@ -102,18 +103,18 @@ TEST(mathlib_quaternion_test_suite, qns_add_test) {
 }
 
 // Test for quaternion-and-quaternion subtraction
-TEST(mathlib_quaternion_test_suite, qnq_sub_test) {
+TEST(gem_quaternion_test_suite, qnq_sub_test) {
 
-	mathlib::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
-	mathlib::Quaternion<float> q2(5.0f, 6.0f, 7.0f, 8.0f);
-	mathlib::Quaternion<float> q3(9.0f, 10.0f, 11.0f, 12.0f);
+	gem::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
+	gem::Quaternion<float> q2(5.0f, 6.0f, 7.0f, 8.0f);
+	gem::Quaternion<float> q3(9.0f, 10.0f, 11.0f, 12.0f);
 
-	mathlib::Quaternion<float> expected_q1q2{ -4.0f, -4.0f, -4.0f, -4.0f };
-	mathlib::Quaternion<float> expected_q2q1{ 4.0f, 4.0f, 4.0f, 4.0f };
+	gem::Quaternion<float> expected_q1q2{ -4.0f, -4.0f, -4.0f, -4.0f };
+	gem::Quaternion<float> expected_q2q1{ 4.0f, 4.0f, 4.0f, 4.0f };
 
 
-	mathlib::Quaternion<float> expected_q1q2q3{ 5.0f, 6.0f, 7.0f, 8.0f };
-	mathlib::Quaternion<float> expected_q1q2q3_b{ -13.0f, -14.0f, -15.0f, -16.0f };
+	gem::Quaternion<float> expected_q1q2q3{ 5.0f, 6.0f, 7.0f, 8.0f };
+	gem::Quaternion<float> expected_q1q2q3_b{ -13.0f, -14.0f, -15.0f, -16.0f };
 
 	// Quaternion - Quaternion
 	auto result_q1q2 = q1 - q2;
@@ -147,17 +148,17 @@ TEST(mathlib_quaternion_test_suite, qnq_sub_test) {
 }
 
 // Test for quaternion-and-scalar subtraction
-TEST(mathlib_quaternion_test_suite, qns_sub_test) {
+TEST(gem_quaternion_test_suite, qns_sub_test) {
 
-	mathlib::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
+	gem::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
 	float s = 5.0f;
 
-	mathlib::Quaternion<float> expected_q1s{ -4.0f, -3.0f, -2.0f, -1.0f };
-	mathlib::Quaternion<float> expected_sq1{ 4.0f, 3.0f, 2.0f, 1.0f };
+	gem::Quaternion<float> expected_q1s{ -4.0f, -3.0f, -2.0f, -1.0f };
+	gem::Quaternion<float> expected_sq1{ 4.0f, 3.0f, 2.0f, 1.0f };
 
 
-	mathlib::Quaternion<float> expected_q1ss{ 1.0f, 2.0f, 3.0f, 4.0f };
-	mathlib::Quaternion<float> expected_q1ss_b{ -9.0f, -8.0f, -7.0f, -6.0f };
+	gem::Quaternion<float> expected_q1ss{ 1.0f, 2.0f, 3.0f, 4.0f };
+	gem::Quaternion<float> expected_q1ss_b{ -9.0f, -8.0f, -7.0f, -6.0f };
 
 	// Quaternion - Scalar
 	auto result_q1s = q1 - s;
@@ -191,18 +192,18 @@ TEST(mathlib_quaternion_test_suite, qns_sub_test) {
 }
 
 // Test for quaternion-and-quaternion multiplication
-TEST(mathlib_quaternion_test_suite, qnq_mul_test) {
+TEST(gem_quaternion_test_suite, qnq_mul_test) {
 
-	mathlib::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
-	mathlib::Quaternion<float> q2(5.0f, 6.0f, 7.0f, 8.0f);
-	mathlib::Quaternion<float> q3(9.0f, 10.0f, 11.0f, 12.0f);
+	gem::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
+	gem::Quaternion<float> q2(5.0f, 6.0f, 7.0f, 8.0f);
+	gem::Quaternion<float> q3(9.0f, 10.0f, 11.0f, 12.0f);
 
-	mathlib::Quaternion<float> expected_q1q2{ -60.0f, 12.0f, 30.0f, 24.0f };
-	mathlib::Quaternion<float> expected_q2q1{ -60.0f, 20.0f, 14.0f, 32.0f };
+	gem::Quaternion<float> expected_q1q2{ -60.0f, 12.0f, 30.0f, 24.0f };
+	gem::Quaternion<float> expected_q2q1{ -60.0f, 20.0f, 14.0f, 32.0f };
 
 
-	mathlib::Quaternion<float> expected_q1q2q3{ 5.0f, 6.0f, 7.0f, 8.0f };
-	mathlib::Quaternion<float> expected_q1q2q3_b{ -13.0f, -14.0f, -15.0f, -16.0f };
+	gem::Quaternion<float> expected_q1q2q3{ 5.0f, 6.0f, 7.0f, 8.0f };
+	gem::Quaternion<float> expected_q1q2q3_b{ -13.0f, -14.0f, -15.0f, -16.0f };
 
 	// Quaternion * Quaternion
 	auto result_q1q2 = q1 * q2;
@@ -222,8 +223,8 @@ TEST(mathlib_quaternion_test_suite, qnq_mul_test) {
 }
 
 // Test for quaternion-and-scalar multiplication
-TEST(mathlib_quaternion_test_suite, qns_mul_test) {
-	mathlib::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
+TEST(gem_quaternion_test_suite, qns_mul_test) {
+	gem::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
 	float s = 5.0f;
 
 	// Quaternion + Quaternion
@@ -253,9 +254,9 @@ TEST(mathlib_quaternion_test_suite, qns_mul_test) {
 	EXPECT_FLOAT_EQ(result_a.z(), result_b.z());
 }
 
-TEST(mathlib_quaternion_test_suite, q_conjugate_test) {
-	mathlib::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
-	mathlib::Quaternion<float> q_conj = q1.conjugate();
+TEST(gem_quaternion_test_suite, q_conjugate_test) {
+	gem::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
+	gem::Quaternion<float> q_conj = q1.conjugate();
 	EXPECT_FLOAT_EQ(q_conj.w(), 1.0f);
 	EXPECT_FLOAT_EQ(q_conj.x(), -2.0f);
 	EXPECT_FLOAT_EQ(q_conj.y(), -3.0f);
@@ -268,20 +269,20 @@ TEST(mathlib_quaternion_test_suite, q_conjugate_test) {
 	EXPECT_FLOAT_EQ(q_conj_conj.z(), q1.z());
 }
 
-TEST(mathlib_quaternion_test_suite, q_magnitude_test) {
-	mathlib::Quaternion<float> q1(1.0f, 1.0f, 1.0f, 1.0f);
+TEST(gem_quaternion_test_suite, q_magnitude_test) {
+	gem::Quaternion<float> q1(1.0f, 1.0f, 1.0f, 1.0f);
 	float mag = q1.magnitude();
 
 	EXPECT_FLOAT_EQ(mag, 2.0f);
 
-	mathlib::Quaternion<float> q2(0.0f, 0.0f, 0.0f, 0.0f);
+	gem::Quaternion<float> q2(0.0f, 0.0f, 0.0f, 0.0f);
 	float mag2 = q2.magnitude();
 
 	EXPECT_FLOAT_EQ(mag2, 0.0f);
 }
 
-TEST(mathlib_quaternion_test_suite, q_normalize_test) {
-	mathlib::Quaternion<float> q1(1.0f, 1.0f, 1.0f, 1.0f);
+TEST(gem_quaternion_test_suite, q_normalize_test) {
+	gem::Quaternion<float> q1(1.0f, 1.0f, 1.0f, 1.0f);
 	auto n = q1.normalize();
 	EXPECT_FLOAT_EQ(0.5f, n[0]);
 	EXPECT_FLOAT_EQ(0.5f, n[1]);
@@ -290,8 +291,8 @@ TEST(mathlib_quaternion_test_suite, q_normalize_test) {
 	EXPECT_FLOAT_EQ(1.0f, n.magnitude());
 }
 
-TEST(mathlib_quaternion_test_suite, q_inverse_test) {
-	mathlib::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
+TEST(gem_quaternion_test_suite, q_inverse_test) {
+	gem::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
 	auto q1_inv = q1.inverse();
 	auto identity = q1 * q1_inv;
 	EXPECT_FLOAT_EQ(identity.w(), 1.0f);
@@ -300,12 +301,52 @@ TEST(mathlib_quaternion_test_suite, q_inverse_test) {
 	EXPECT_FLOAT_EQ(identity.z(), 0.0f);
 }
 
-TEST(mathlib_quaternion_test_suite, q_dot_test) {
-	mathlib::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
-	mathlib::Quaternion<float> q2(5.0f, 6.0f, 7.0f, 8.0f);
+TEST(gem_quaternion_test_suite, q_dot_test) {
+	gem::Quaternion<float> q1(1.0f, 2.0f, 3.0f, 4.0f);
+	gem::Quaternion<float> q2(5.0f, 6.0f, 7.0f, 8.0f);
 
 	float result_q1q2 = q1.dot(q2);
 	float result_q2q1 = q2.dot(q1);
 
 	EXPECT_FLOAT_EQ(result_q1q2, result_q2q1);
+}
+
+TEST(gem_quaternion_test_suite, q_lerp_test) {
+	gem::Quaternion<float> q1(1.0f, 0.0f, 0.0f, 0.0f);
+	gem::Quaternion<float> q2(0.0f, 1.0f, 0.0f, 0.0f);
+
+	auto q_lerp_0 = lerp(q1, q2, 0.0f);
+	EXPECT_FLOAT_EQ(q_lerp_0.w(), q1.w());
+	EXPECT_FLOAT_EQ(q_lerp_0.x(), q1.x());
+	EXPECT_FLOAT_EQ(q_lerp_0.y(), q1.y());
+	EXPECT_FLOAT_EQ(q_lerp_0.z(), q1.z());
+
+	auto q_lerp_1 = lerp(q1, q2, 1.0f);
+	EXPECT_FLOAT_EQ(q_lerp_1.w(), q2.w());
+	EXPECT_FLOAT_EQ(q_lerp_1.x(), q2.x());
+	EXPECT_FLOAT_EQ(q_lerp_1.y(), q2.y());
+	EXPECT_FLOAT_EQ(q_lerp_1.z(), q2.z());
+}
+
+TEST(gem_quaternion_test_suite, q_slerp_test) {
+	gem::Quaternion<float> q1(1.0f, 0.0f, 0.0f, 0.0f);
+	gem::Quaternion<float> q2(0.0f, 1.0f, 0.0f, 0.0f);
+
+	auto q_slerp_0 = slerp(q1, q2, 0.0f);
+	EXPECT_FLOAT_EQ(q_slerp_0.w(), q1.w());
+	EXPECT_FLOAT_EQ(q_slerp_0.x(), q1.x());
+	EXPECT_FLOAT_EQ(q_slerp_0.y(), q1.y());
+	EXPECT_FLOAT_EQ(q_slerp_0.z(), q1.z());
+
+	auto q_slerp_1 = slerp(q1, q2, 1.0f);
+	EXPECT_FLOAT_EQ(q_slerp_1.w(), q2.w());
+	EXPECT_FLOAT_EQ(q_slerp_1.x(), q2.x());
+	EXPECT_FLOAT_EQ(q_slerp_1.y(), q2.y());
+	EXPECT_FLOAT_EQ(q_slerp_1.z(), q2.z());
+
+	auto q_slerp_05 = slerp(q1, q2, 0.5f);
+	EXPECT_NEAR(q_slerp_05.w(), std::sqrt(2) / 2.0f, 1e-6f);
+	EXPECT_NEAR(q_slerp_05.x(), std::sqrt(2) / 2.0f, 1e-6f);
+	EXPECT_NEAR(q_slerp_05.y(), 0.0f, 1e-6f);
+	EXPECT_NEAR(q_slerp_05.z(), 0.0f, 1e-6f);
 }

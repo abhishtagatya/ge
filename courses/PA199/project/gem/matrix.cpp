@@ -1,3 +1,3 @@
 #include "matrix.hpp"
 
-namespace mathlib {}
+namespace gem {}

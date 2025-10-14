@@ -1,3 +1,3 @@
 #include "quaternion.hpp"
 
-namespace mathlib {}
+namespace gem {}

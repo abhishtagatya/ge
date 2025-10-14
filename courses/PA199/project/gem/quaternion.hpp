@@ -3,7 +3,7 @@
 #include <cmath>
 #include <iostream>
 
-namespace mathlib {
+namespace gem {
 	template <typename T, size_t N>
 	struct Vector; // Forward declaration
 
@@ -43,6 +43,10 @@ namespace mathlib {
 
 		// SUBTRACTION OPERATORS
 		// --------------------------------
+
+		Quaternion<T> operator-() const {
+			return Quaternion<T>(-data);
+		}
 
 		Quaternion<T> operator-(const Quaternion<T>& other) const {
 			return Quaternion<T>(data - other.data);
@@ -110,11 +114,16 @@ namespace mathlib {
 		}
 
 		AxisAngle<T> toAxisAngle() const {
-			T mag = magnitude();
-			if (mag == 0) return AxisAngle<T>(); // No rotation
+			Quaternion<T> q = normalize();
 
-			T angle = 2 * std::atan2(mag, w());
-			return AxisAngle<T>(angle, x() / mag, y() / mag, z() / mag);
+			T angle = 2 * std::acos(q.w());
+			T s = std::sqrt(1 - q.w() * q.w());
+
+			if (s < 0.001) { 
+				return AxisAngle<T>();
+			} else {
+				return AxisAngle<T>(angle, q.x() / s, q.y() / s, q.z() / s);
+			}
 		}
 	};
 }

@@ -1,3 +1,3 @@
 #include "interpolation.hpp"
 
-namespace mathlib {}
+namespace gem {}

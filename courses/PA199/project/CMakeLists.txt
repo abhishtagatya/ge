@@ -19,13 +19,15 @@ target_sources(PA199_project
 )
 
 # Add sub-directories of your libraries
-add_subdirectory("mathlib")  # This includes the tutorial library. Can be removed.
+add_subdirectory("gem")  # This includes the tutorial library. Can be removed.
+add_subdirectory("gel")
 
 # Include your liblaries to linking of the project.
 target_link_libraries(PA199_project
     PUBLIC 
         lodepng # This links the lodepng library. Do not remove.
-        "mathlib" # This links the tutorial library. Can be removed.
+        gem # This links the tutorial library. Can be removed.
+        gel
 )
 
 # Includes 'unit_tests' project to the build. DO NOT MODIFY THIS COMMAND:
