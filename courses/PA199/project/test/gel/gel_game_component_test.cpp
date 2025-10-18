@@ -7,7 +7,7 @@
 TEST(gel_game_component_test_suite, gc_basic_test) {
 	gel::GameEntity e;
 
-	e.addComponent(new gel::TestComponent());
+	e.addComponent(std::make_unique<gel::TestComponent>());
 
 	EXPECT_FLOAT_EQ(e.getComponents().size(), 1);
 

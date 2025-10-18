@@ -12,7 +12,8 @@
 #include <iostream>
 #include <iomanip>
 
-#include "gem.hpp"
+#include <gem.hpp>
+#include <gel.hpp>
 
 static GLuint load_shader(std::filesystem::path const& path, GLenum const shader_type)
 {
@@ -127,6 +128,11 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
     glViewport(0, 0, width, height);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+	//gel::GameEntity testEntity;
+    //testEntity.addComponent(std::make_unique<gel::TestComponent>());
+    //mainScene.addEntity(testEntity); // scene now owns the entity
 }
 
 Application::~Application()
@@ -143,7 +149,9 @@ Application::~Application()
 // Methods
 // ----------------------------------------------------------------------------
 
-void Application::update(float delta) {}
+void Application::update(float delta) {
+	mainScene.update(delta);
+}
 
 void Application::render() {
     // Sets the clear color.

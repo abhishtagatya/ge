@@ -40,6 +40,15 @@ namespace gel {
 		const std::vector<GameEntity*>& getChildren() const { return children_; }
 		const std::vector<GameComponent*>& getComponents() const { return component_; }
 
+		gem::Matrix4<float> getLocalTransform() const;
+		gem::Matrix4<float> getInverseLocalTransform() const;
+		gem::Matrix4<float> getWorldTransform() const;
+		gem::Matrix4<float> getInverseWorldTransform() const;
+
+		gem::Vector<float, 3> getUpVector() const;
+		gem::Vector<float, 3> getRightVector() const;
+		gem::Vector<float, 3> getForwardVector() const;
+
 	private:
 		gem::Vector<float, 3> position_{ 0.0f, 0.0f, 0.0f };
 		gem::Vector<float, 3> orientation_{ 0.0f, 0.0f, 0.0f };

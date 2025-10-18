@@ -9,6 +9,9 @@
 #include "iapplication.h"
 #include "glad/glad.h"
 
+#include <gem.hpp>
+#include <gel.hpp>
+
 class Application : public IApplication {
     // ----------------------------------------------------------------------------
     // Variables
@@ -58,4 +61,6 @@ class Application : public IApplication {
 
     /** @copydoc IApplication::on_key_pressed */
     void on_key_pressed(int key, int scancode, int action, int mods) override;
+
+    gel::GameScene mainScene;
 };

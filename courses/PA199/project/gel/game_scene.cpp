@@ -4,7 +4,7 @@
 namespace gel {
 
 	void GameScene::update(double delta_time) {
-		for (auto* entity : entities_) {
+		for (auto& entity : entities_) {
 			entity->update(delta_time);
 		}
 	}

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "camera_component.hpp"
 #include <vector>
 
 namespace gel {
@@ -11,6 +12,7 @@ namespace gel {
 		virtual ~GameScene() = default;
 
 		void update(double delta_time);
+		void render();
 
 		void addEntity(GameEntity* entity) {
 			entities_.push_back(entity);
@@ -30,5 +32,6 @@ namespace gel {
 
 	private:
 		std::vector<GameEntity*> entities_;
+		CameraComponent mainCamera_;
 	};
 }

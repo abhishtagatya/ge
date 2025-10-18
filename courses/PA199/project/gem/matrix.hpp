@@ -1,5 +1,6 @@
 #pragma once
 
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include <cmath>
 #include <array>
@@ -437,6 +438,48 @@ namespace gem {
 			result.data[3][2] = (b * (e * o - g * m) - a * (f * o - g * n) + c * (e * n - f * m)) * invDet;
 			result.data[3][3] = (a * (f * k - g * j) - b * (e * k - g * i) + c * (e * j - f * i)) * invDet;
 
+			return result;
+		}
+
+		// LOOKAT FUNCTION
+		// -------------------------------
+
+		static Matrix4<T> lookAt(const Vector<T, 3>& eye, const Vector<T, 3>& center, const Vector<T, 3>& up) {
+			Vector<T, 3> f = (center - eye).normalize();
+			Vector<T, 3> r = f.cross(up).normalize();
+			Vector<T, 3> u = r.cross(f);
+			Matrix4<T> result = identity();
+
+			result.data[0][0] = r[0];
+			result.data[0][1] = r[1];
+			result.data[0][2] = r[2];
+
+			result.data[1][0] = u[0];
+			result.data[1][1] = u[1];
+			result.data[1][2] = u[2];
+
+			result.data[2][0] = -f[0];
+			result.data[2][1] = -f[1];
+			result.data[2][2] = -f[2];
+
+			result.data[0][3] = -r.dot(eye);
+			result.data[1][3] = -u.dot(eye);
+			result.data[2][3] = f.dot(eye);
+
+			return result;
+		}
+
+		static Matrix4<T> perspective(T fov, T aspect, T near, T far) {
+			Matrix4<T> result = zero();
+
+			fov = fov * (M_PI / 180);
+
+			T tanHalfFov = std::tan(fov / 2);
+			result.data[0][0] = 1 / (aspect * tanHalfFov);
+			result.data[1][1] = 1 / (tanHalfFov);
+			result.data[2][2] = -(far + near) / (far - near);
+			result.data[2][3] = -(2 * far * near) / (far - near);
+			result.data[3][2] = -1;
 			return result;
 		}
 	};

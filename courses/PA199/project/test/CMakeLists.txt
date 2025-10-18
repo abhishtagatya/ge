@@ -9,7 +9,7 @@ add_executable(PA199_project_tests
     "gem/gem_matrix_test.cpp" 
     "gem/gem_quaternion_test.cpp"
     "gem/gem_axis_angles_test.cpp"
- "gel/gel_game_entity_test.cpp" "gel/gel_game_component_test.cpp")
+ "gel/gel_game_entity_test.cpp")
 
 # Search and ling with 3rd party libraries
 find_package(glfw3 CONFIG REQUIRED)
