@@ -19,7 +19,6 @@ namespace gel {
 		}
 
 		virtual ~GameEntity() = default;
-		void update(double delta_time);
 
 		void addChild(GameEntity* child);
 		void removeChild(GameEntity* child);

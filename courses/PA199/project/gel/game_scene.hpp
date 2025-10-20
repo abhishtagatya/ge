@@ -11,7 +11,7 @@ namespace gel {
 		GameScene() = default;
 		virtual ~GameScene() = default;
 
-		void update(double delta_time);
+		void update(float delta_time);
 		void render();
 
 		void addEntity(GameEntity* entity) {
@@ -30,8 +30,19 @@ namespace gel {
 			return static_cast<int>(entities_.size());
 		}
 
+		CameraComponent* getMainCamera() {
+			return mainCamera_;
+		}
+
+		void setMainCamera(CameraComponent* camera) {
+			this->mainCamera_ = camera;
+		}
+
 	private:
 		std::vector<GameEntity*> entities_;
-		CameraComponent mainCamera_;
+		CameraComponent* mainCamera_ = nullptr;
+
+		void recursiveUpdate(GameEntity* entity, float delta_time);
+		void recursiveRender(GameEntity* entity);
 	};
 }

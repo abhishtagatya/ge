@@ -16,7 +16,7 @@ namespace gel {
 		float near() const { return near_plane_; }
 		float far() const { return far_plane_; }
 
-		void update(double delta_time) override {
+		void update(float delta_time) override {
 			if (getEntity() != nullptr) {
 				viewMatrix = gem::Matrix4<float>::lookAt(
 					getEntity()->getPosition(), // Eye
@@ -26,7 +26,10 @@ namespace gel {
 			}
 
 			projectionMatrix = gem::Matrix4<float>::perspective(fov_, aspect_ratio_, near_plane_, far_plane_);
+			//projectionMatrix = gem::Matrix4<float>::ortho(-2, 2, -2, 2, 0.1, 1000);
 		}
+
+		void render(gem::Matrix4<float> m, gem::Matrix4<float> v, gem::Matrix4<float> p) override {}
 
 		const gem::Matrix4<float>& getViewMatrix() const { return viewMatrix; }
 		const gem::Matrix4<float>& getProjectionMatrix() const { return projectionMatrix; }

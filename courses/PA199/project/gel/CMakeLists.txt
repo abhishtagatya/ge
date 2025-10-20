@@ -11,6 +11,8 @@ add_library(gel
 	"test_component.cpp" 
 	"camera_component.hpp"
 	"camera_component.cpp"
+	"mesh_renderer_component.hpp"
+	"mesh_renderer_component.cpp"
 	"gel.hpp"
 )
 

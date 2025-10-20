@@ -20,6 +20,7 @@ class Application : public IApplication {
     float red = 0.0f;
     float green = 0.0f;
     float blue = 0.0f;
+
     GLuint vertex_shader;
     GLuint fragment_shader;
     GLuint shader_program;
@@ -27,6 +28,10 @@ class Application : public IApplication {
     GLuint vertex_buffer;
     GLuint index_buffer;
     GLuint texture;
+
+    GLuint default_vertex_shader;
+    GLuint default_fragment_shader;
+    GLuint default_shader_program;
 
     // ----------------------------------------------------------------------------
     // Constructors & Destructors

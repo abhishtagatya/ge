@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "gem.hpp"
 
 namespace gel {
 	class GameEntity;
@@ -10,7 +11,8 @@ namespace gel {
 		GameComponent() = default;
 
 		virtual ~GameComponent() = default;
-		virtual void update(double delta_time) = 0;
+		virtual void update(float delta_time) = 0;
+		virtual void render(gem::Matrix4<float> m, gem::Matrix4<float> v, gem::Matrix4<float> p) = 0;
 
 		void linkEntity(GameEntity* entity) {
 			this->entity = entity;

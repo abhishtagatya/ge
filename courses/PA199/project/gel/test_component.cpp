@@ -3,7 +3,7 @@
 #include <iostream>
 
 namespace gel {
-	void TestComponent::update(double delta_time) {
+	void TestComponent::update(float delta_time) {
 		std::cout << "TestComponent update: " << delta_time << std::endl;
 	}
 }

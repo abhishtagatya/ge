@@ -444,27 +444,25 @@ namespace gem {
 		// LOOKAT FUNCTION
 		// -------------------------------
 
-		static Matrix4<T> lookAt(const Vector<T, 3>& eye, const Vector<T, 3>& center, const Vector<T, 3>& up) {
+		static Matrix4<T> lookAt(const Vector<T, 3>& eye,
+			const Vector<T, 3>& center,
+			const Vector<T, 3>& up)
+		{
 			Vector<T, 3> f = (center - eye).normalize();
 			Vector<T, 3> r = f.cross(up).normalize();
 			Vector<T, 3> u = r.cross(f);
+
 			Matrix4<T> result = identity();
 
-			result.data[0][0] = r[0];
-			result.data[0][1] = r[1];
-			result.data[0][2] = r[2];
+			result[0][0] = r[0]; result[1][0] = r[1]; result[2][0] = r[2]; result[3][0] = -r.dot(eye);
+			result[0][1] = u[0]; result[1][1] = u[1]; result[2][1] = u[2]; result[3][1] = -u.dot(eye);
+			result[0][2] = -f[0]; result[1][2] = -f[1]; result[2][2] = -f[2]; result[3][2] = f.dot(eye);
+			result[0][3] = 0; result[1][3] = 0; result[2][3] = 0; result[3][3] = 1;
 
-			result.data[1][0] = u[0];
-			result.data[1][1] = u[1];
-			result.data[1][2] = u[2];
-
-			result.data[2][0] = -f[0];
-			result.data[2][1] = -f[1];
-			result.data[2][2] = -f[2];
-
-			result.data[0][3] = -r.dot(eye);
-			result.data[1][3] = -u.dot(eye);
-			result.data[2][3] = f.dot(eye);
+			std::cout << "world up: " << up[0] << "," << up[1] << "," << up[2] << "\n";
+			std::cout << "front: " << f[0] << "," << f[1] << "," << f[2] << "\n";
+			std::cout << "right: " << r[0] << "," << r[1] << "," << r[2] << "\n";
+			std::cout << "up: " << u[0] << "," << u[1] << "," << u[2] << "\n";
 
 			return result;
 		}
@@ -472,14 +470,29 @@ namespace gem {
 		static Matrix4<T> perspective(T fov, T aspect, T near, T far) {
 			Matrix4<T> result = zero();
 
-			fov = fov * (M_PI / 180);
+			T tanHalfFov = std::tan(fov * (M_PI / 180) / 2);
 
-			T tanHalfFov = std::tan(fov / 2);
-			result.data[0][0] = 1 / (aspect * tanHalfFov);
-			result.data[1][1] = 1 / (tanHalfFov);
-			result.data[2][2] = -(far + near) / (far - near);
-			result.data[2][3] = -(2 * far * near) / (far - near);
-			result.data[3][2] = -1;
+			result[0][0] = 1 / (aspect * tanHalfFov);
+			result[1][1] = 1 / (tanHalfFov);
+			result[2][2] = -(far + near) / (far - near);
+			result[3][2] = -(2 * far * near) / (far - near);
+			result[2][3] = -1;
+			result[3][3] = 0;
+
+			return result;
+		}
+
+		static Matrix4<T> ortho(T left, T right, T bottom, T top, T near, T far) {
+			Matrix4<T> result = Matrix4<T>::identity();
+
+			result[0][0] = 2 / (right - left);
+			result[1][1] = 2 / (top - bottom);
+			result[2][2] = -2 / (far - near);
+			result[3][0] = -(right + left) / (right - left);
+			result[3][1] = -(top + bottom) / (top - bottom);
+			result[3][2] = -(far + near) / (far - near);
+			result[3][3] = 1;
+
 			return result;
 		}
 	};

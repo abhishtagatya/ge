@@ -3,16 +3,6 @@
 #include <vector>
 
 namespace gel {
-	void GameEntity::update(double delta_time) {
-		for (auto& comp : component_) {
-			if (comp) comp->update(delta_time);
-		}
-
-		for (auto& child : children_) {
-			if (child) child->update(delta_time);
-		}
-	}
-
 	void GameEntity::addChild(GameEntity* child) {
 		children_.push_back(child);
 		child->parent_ = this;

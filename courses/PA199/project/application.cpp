@@ -58,6 +58,24 @@ static GLuint load_texture(std::filesystem::path const& path)
     return texture;
 }
 
+static GLuint create_shader_program(GLuint const  vertex_shader, GLuint const  fragment_shader) {
+    GLuint const shader_program = glCreateProgram();
+
+    assert(glGetError() == 0U && shader_program != 0);
+    glAttachShader(shader_program, vertex_shader);
+    assert(glGetError() == 0U);
+    glAttachShader(shader_program, fragment_shader);
+    assert(glGetError() == 0U);
+    glLinkProgram(shader_program);
+    assert(glGetError() == 0U);
+    glDetachShader(shader_program, vertex_shader);
+    assert(glGetError() == 0U);
+    glDetachShader(shader_program, fragment_shader);
+    assert(glGetError() == 0U);
+
+    return shader_program;
+}
+
 // ----------------------------------------------------------------------------
 // Constructors & Destructors
 // ----------------------------------------------------------------------------
@@ -67,19 +85,7 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
     , vertex_shader(load_shader(lecture_folder_path / "data" / "shaders" / "sample.vert", GL_VERTEX_SHADER))
     , fragment_shader(load_shader(lecture_folder_path / "data" / "shaders" / "sample.frag", GL_FRAGMENT_SHADER))
     , shader_program([](GLuint const  vertex_shader, GLuint const  fragment_shader) -> GLuint {
-            GLuint const  shader_program = glCreateProgram();
-            assert(glGetError() == 0U && shader_program != 0);
-            glAttachShader(shader_program,vertex_shader);
-            assert(glGetError() == 0U);
-            glAttachShader(shader_program,fragment_shader);
-            assert(glGetError() == 0U);
-            glLinkProgram(shader_program);
-            assert(glGetError() == 0U);
-            glDetachShader(shader_program, vertex_shader);
-            assert(glGetError() == 0U);
-            glDetachShader(shader_program, fragment_shader);
-            assert(glGetError() == 0U);
-            return shader_program;
+            return create_shader_program(vertex_shader, fragment_shader);
             }(vertex_shader, fragment_shader))
     , vertex_arrays([]() -> GLuint {
             GLuint vertex_arrays;
@@ -129,10 +135,84 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    default_vertex_shader = load_shader(lecture_folder_path / "data" / "shaders" / "default.vert", GL_VERTEX_SHADER);
+    default_fragment_shader = load_shader(lecture_folder_path / "data" / "shaders" / "default.frag", GL_FRAGMENT_SHADER);
+    default_shader_program = create_shader_program(default_vertex_shader, default_fragment_shader);
 
-	//gel::GameEntity testEntity;
-    //testEntity.addComponent(std::make_unique<gel::TestComponent>());
-    //mainScene.addEntity(testEntity); // scene now owns the entity
+    std::vector<MeshRendererVAO> cubeVertices = {
+        // Positions          Normals         UVs
+        // Front face
+        { -0.5f, -0.5f,  0.5f, 0,0,1, 0,0 },
+        {  0.5f, -0.5f,  0.5f, 0,0,1, 1,0 },
+        {  0.5f,  0.5f,  0.5f, 0,0,1, 1,1 },
+        { -0.5f,  0.5f,  0.5f, 0,0,1, 0,1 },
+        // Back face
+        { -0.5f, -0.5f, -0.5f, 0,0,-1, 0,0 },
+        {  0.5f, -0.5f, -0.5f, 0,0,-1, 1,0 },
+        {  0.5f,  0.5f, -0.5f, 0,0,-1, 1,1 },
+        { -0.5f,  0.5f, -0.5f, 0,0,-1, 0,1 },
+        // Left face
+        { -0.5f, -0.5f, -0.5f, -1,0,0, 0,0 },
+        { -0.5f, -0.5f,  0.5f, -1,0,0, 1,0 },
+        { -0.5f,  0.5f,  0.5f, -1,0,0, 1,1 },
+        { -0.5f,  0.5f, -0.5f, -1,0,0, 0,1 },
+        // Right face
+        { 0.5f, -0.5f, -0.5f, 1,0,0, 0,0 },
+        { 0.5f, -0.5f,  0.5f, 1,0,0, 1,0 },
+        { 0.5f,  0.5f,  0.5f, 1,0,0, 1,1 },
+        { 0.5f,  0.5f, -0.5f, 1,0,0, 0,1 },
+        // Top face
+        { -0.5f, 0.5f,  -0.5f, 0,1,0, 0,0 },
+        {  0.5f, 0.5f,  -0.5f, 0,1,0, 1,0 },
+        {  0.5f, 0.5f,   0.5f, 0,1,0, 1,1 },
+        { -0.5f, 0.5f,   0.5f, 0,1,0, 0,1 },
+        // Bottom face
+        { -0.5f, -0.5f,  -0.5f, 0,-1,0, 0,0 },
+        {  0.5f, -0.5f,  -0.5f, 0,-1,0, 1,0 },
+        {  0.5f, -0.5f,   0.5f, 0,-1,0, 1,1 },
+        { -0.5f, -0.5f,   0.5f, 0,-1,0, 0,1 },
+    };
+
+    std::vector<unsigned int> cubeIndices = {
+        0,1,2, 0,2,3,       // front
+        4,5,6, 4,6,7,       // back
+        8,9,10, 8,10,11,    // left
+        12,13,14, 12,14,15, // right
+        16,17,18, 16,18,19, // top
+        20,21,22, 20,22,23  // bottom
+    };
+
+	auto testEntity = new gel::GameEntity(
+        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+        gem::Vector<float, 3> { M_PI / 4.0f, M_PI / 4.0f, 0.0f },
+        gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
+    );
+    auto planeRenderComponent = new gel::MeshRendererComponent(
+        cubeVertices,
+        cubeIndices,
+        default_shader_program
+    );
+	testEntity->addComponent(planeRenderComponent);
+
+	auto cameraEntity = new gel::GameEntity(
+        gem::Vector<float, 3> { 0.0f, 0.0f, 10.0f },
+        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+        gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
+    );
+
+    std::cout << width << std::endl;
+    std::cout << height << std::endl;
+
+	auto cameraComponent = new gel::CameraComponent(
+        45.0f, width / height, 0.1f, 1000.0f
+    );
+    cameraComponent->targetEntity = testEntity;
+    cameraEntity->addComponent(cameraComponent);
+
+	mainScene.addEntity(testEntity);
+	mainScene.addEntity(cameraEntity);
+
+	mainScene.setMainCamera(cameraComponent);
 }
 
 Application::~Application()
@@ -154,11 +234,14 @@ void Application::update(float delta) {
 }
 
 void Application::render() {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     // Sets the clear color.
-    glClearColor(red, green, blue, 1.0f);
+    glClearColor(0.0, 0.0, 0.0, 1.0f);
     // Clears the window using the above color.
-    glClear(GL_COLOR_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    /*
     glUseProgram(shader_program);
     assert(glGetError() == 0U);
     glBindVertexArray(vertex_arrays);
@@ -169,8 +252,11 @@ void Application::render() {
     assert(glGetError() == 0U);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     assert(glGetError() == 0U);
+    */
 
-
+    glDisable(GL_CULL_FACE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // see edges
+    mainScene.render();
 }
 
 void Application::render_ui() {}
@@ -187,6 +273,7 @@ void Application::on_mouse_move(double x, double y) {}
 void Application::on_mouse_button(int button, int action, int mods) {}
 
 void Application::on_key_pressed(int key, int scancode, int action, int mods) {
+    /*
     if (action == GLFW_PRESS) {
         red = 0;
         green = 0;
@@ -203,4 +290,5 @@ void Application::on_key_pressed(int key, int scancode, int action, int mods) {
             break;
         }
     }
+    */
 }
