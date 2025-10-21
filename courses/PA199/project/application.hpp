@@ -17,10 +17,6 @@ class Application : public IApplication {
     // Variables
     // ----------------------------------------------------------------------------
   private:
-    float red = 0.0f;
-    float green = 0.0f;
-    float blue = 0.0f;
-
     GLuint vertex_shader;
     GLuint fragment_shader;
     GLuint shader_program;
@@ -29,9 +25,9 @@ class Application : public IApplication {
     GLuint index_buffer;
     GLuint texture;
 
-    GLuint default_vertex_shader;
-    GLuint default_fragment_shader;
-    GLuint default_shader_program;
+    GLuint unlit_vtx_shader;
+    GLuint unlit_frg_shader;
+    GLuint unlit_program;
 
     // ----------------------------------------------------------------------------
     // Constructors & Destructors
@@ -67,5 +63,11 @@ class Application : public IApplication {
     /** @copydoc IApplication::on_key_pressed */
     void on_key_pressed(int key, int scancode, int action, int mods) override;
 
+	// ----------------------------------------------------------------------------
+
     gel::GameScene mainScene;
+
+    // Game Entity
+	gel::GameEntity* firstCamera = nullptr;
+	gel::GameEntity* secondCamera = nullptr;
 };

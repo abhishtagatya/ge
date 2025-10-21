@@ -8,6 +8,6 @@ namespace gel {
 		TestComponent() = default;
 
 		void update(float delta_time) override;
-		void render(gem::Matrix4<float> m, gem::Matrix4<float> v, gem::Matrix4<float> p) override {};
+		void render() override {};
 	};
 }

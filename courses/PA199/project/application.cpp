@@ -82,147 +82,148 @@ static GLuint create_shader_program(GLuint const  vertex_shader, GLuint const  f
 
 Application::Application(int initial_width, int initial_height, std::vector<std::string> arguments)
     : IApplication(initial_width, initial_height, arguments)
-    , vertex_shader(load_shader(lecture_folder_path / "data" / "shaders" / "sample.vert", GL_VERTEX_SHADER))
-    , fragment_shader(load_shader(lecture_folder_path / "data" / "shaders" / "sample.frag", GL_FRAGMENT_SHADER))
-    , shader_program([](GLuint const  vertex_shader, GLuint const  fragment_shader) -> GLuint {
-            return create_shader_program(vertex_shader, fragment_shader);
-            }(vertex_shader, fragment_shader))
-    , vertex_arrays([]() -> GLuint {
-            GLuint vertex_arrays;
-            glGenVertexArrays(1, &vertex_arrays);
-            glBindVertexArray(vertex_arrays);
-            return vertex_arrays;
-            }())
-    , vertex_buffer([]() -> GLuint {
-            struct Vertex { float x,y,z,u,v; };
-            std::vector<Vertex> const vertices {
-                { -0.5f, -0.125f, 0.0f,       0.0f, 0.0f },
-                {  0.5f, -0.125f, 0.0f,       1.0f, 0.0f },
-                {  0.5f,  0.125f, 0.0f,       1.0f, 1.0f },
-                { -0.5f,  0.125f, 0.0f,       0.0f, 1.0f },
-            };
-            GLuint vertex_buffer;
-            glGenBuffers(1, &vertex_buffer);
-            assert(glGetError() == 0U);
-            glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-            assert(glGetError() == 0U);
-            glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices.front(), GL_STATIC_DRAW);
-            assert(glGetError() == 0U);
-            glEnableVertexAttribArray(0);
-            assert(glGetError() == 0U);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
-            assert(glGetError() == 0U);
-            glEnableVertexAttribArray(1);
-            assert(glGetError() == 0U);
-            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3*sizeof(float)));
-            assert(glGetError() == 0U);
-            return vertex_buffer;
-            }())
-    , index_buffer([]() -> GLuint {
-            std::vector<GLuint> const indices { 0U, 1U, 2U,     0U, 2U, 3U };
-            GLuint index_buffer;
-            glGenBuffers(1, &index_buffer);
-            assert(glGetError() == 0U);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-            assert(glGetError() == 0U);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices.front(), GL_STATIC_DRAW);
-            assert(glGetError() == 0U);
-            return index_buffer;
-            }())
-    , texture(load_texture(lecture_folder_path / "data" / "textures" / "you_win.png"))
 {
+	std::cout << "Application started with following arguments:\n" << std::endl;
     glViewport(0, 0, width, height);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    default_vertex_shader = load_shader(lecture_folder_path / "data" / "shaders" / "default.vert", GL_VERTEX_SHADER);
-    default_fragment_shader = load_shader(lecture_folder_path / "data" / "shaders" / "default.frag", GL_FRAGMENT_SHADER);
-    default_shader_program = create_shader_program(default_vertex_shader, default_fragment_shader);
+    unlit_vtx_shader = load_shader(lecture_folder_path / "data" / "shaders" / "default.vert", GL_VERTEX_SHADER);
+    unlit_frg_shader = load_shader(lecture_folder_path / "data" / "shaders" / "default.frag", GL_FRAGMENT_SHADER);
+    unlit_program = create_shader_program(unlit_vtx_shader, unlit_frg_shader);
+
+	GLuint texture = load_texture(lecture_folder_path / "data" / "textures" / "container.png");
 
     std::vector<MeshRendererVAO> cubeVertices = {
-        // Positions          Normals         UVs
-        // Front face
+        // Front face (z+)
         { -0.5f, -0.5f,  0.5f, 0,0,1, 0,0 },
         {  0.5f, -0.5f,  0.5f, 0,0,1, 1,0 },
         {  0.5f,  0.5f,  0.5f, 0,0,1, 1,1 },
         { -0.5f,  0.5f,  0.5f, 0,0,1, 0,1 },
-        // Back face
-        { -0.5f, -0.5f, -0.5f, 0,0,-1, 0,0 },
-        {  0.5f, -0.5f, -0.5f, 0,0,-1, 1,0 },
-        {  0.5f,  0.5f, -0.5f, 0,0,-1, 1,1 },
-        { -0.5f,  0.5f, -0.5f, 0,0,-1, 0,1 },
-        // Left face
+
+        // Back face (z-)
+        {  0.5f, -0.5f, -0.5f, 0,0,-1, 0,0 },
+        { -0.5f, -0.5f, -0.5f, 0,0,-1, 1,0 },
+        { -0.5f,  0.5f, -0.5f, 0,0,-1, 1,1 },
+        {  0.5f,  0.5f, -0.5f, 0,0,-1, 0,1 },
+
+        // Left face (x-)
         { -0.5f, -0.5f, -0.5f, -1,0,0, 0,0 },
         { -0.5f, -0.5f,  0.5f, -1,0,0, 1,0 },
         { -0.5f,  0.5f,  0.5f, -1,0,0, 1,1 },
         { -0.5f,  0.5f, -0.5f, -1,0,0, 0,1 },
-        // Right face
-        { 0.5f, -0.5f, -0.5f, 1,0,0, 0,0 },
-        { 0.5f, -0.5f,  0.5f, 1,0,0, 1,0 },
-        { 0.5f,  0.5f,  0.5f, 1,0,0, 1,1 },
-        { 0.5f,  0.5f, -0.5f, 1,0,0, 0,1 },
-        // Top face
-        { -0.5f, 0.5f,  -0.5f, 0,1,0, 0,0 },
-        {  0.5f, 0.5f,  -0.5f, 0,1,0, 1,0 },
-        {  0.5f, 0.5f,   0.5f, 0,1,0, 1,1 },
-        { -0.5f, 0.5f,   0.5f, 0,1,0, 0,1 },
-        // Bottom face
-        { -0.5f, -0.5f,  -0.5f, 0,-1,0, 0,0 },
-        {  0.5f, -0.5f,  -0.5f, 0,-1,0, 1,0 },
-        {  0.5f, -0.5f,   0.5f, 0,-1,0, 1,1 },
-        { -0.5f, -0.5f,   0.5f, 0,-1,0, 0,1 },
+
+        // Right face (x+)
+        {  0.5f, -0.5f,  0.5f, 1,0,0, 0,0 },
+        {  0.5f, -0.5f, -0.5f, 1,0,0, 1,0 },
+        {  0.5f,  0.5f, -0.5f, 1,0,0, 1,1 },
+        {  0.5f,  0.5f,  0.5f, 1,0,0, 0,1 },
+
+        // Top face (y+)
+        { -0.5f,  0.5f,  0.5f, 0,1,0, 0,0 },
+        {  0.5f,  0.5f,  0.5f, 0,1,0, 1,0 },
+        {  0.5f,  0.5f, -0.5f, 0,1,0, 1,1 },
+        { -0.5f,  0.5f, -0.5f, 0,1,0, 0,1 },
+
+        // Bottom face (y-)
+        { -0.5f, -0.5f, -0.5f, 0,-1,0, 0,0 },
+        {  0.5f, -0.5f, -0.5f, 0,-1,0, 1,0 },
+        {  0.5f, -0.5f,  0.5f, 0,-1,0, 1,1 },
+        { -0.5f, -0.5f,  0.5f, 0,-1,0, 0,1 }
     };
 
     std::vector<unsigned int> cubeIndices = {
-        0,1,2, 0,2,3,       // front
-        4,5,6, 4,6,7,       // back
-        8,9,10, 8,10,11,    // left
-        12,13,14, 12,14,15, // right
-        16,17,18, 16,18,19, // top
-        20,21,22, 20,22,23  // bottom
+        0, 1, 2, 0, 2, 3,       // Front
+        4, 5, 6, 4, 6, 7,       // Back
+        8, 9,10, 8,10,11,       // Left
+        12,13,14, 12,14,15,     // Right
+        16,17,18, 16,18,19,     // Top
+        20,21,22, 20,22,23      // Bottom
     };
 
-	auto testEntity = new gel::GameEntity(
-        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
-        gem::Vector<float, 3> { M_PI / 4.0f, M_PI / 4.0f, 0.0f },
-        gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
-    );
-    auto planeRenderComponent = new gel::MeshRendererComponent(
+    auto cubeRenderComponent = new gel::MeshRendererComponent(
         cubeVertices,
         cubeIndices,
-        default_shader_program
+        texture
     );
-	testEntity->addComponent(planeRenderComponent);
 
-	auto cameraEntity = new gel::GameEntity(
-        gem::Vector<float, 3> { 0.0f, 0.0f, 10.0f },
+	auto c1 = new gel::GameEntity(
+        gem::Vector<float, 3> { 1.0f, 0.0f, 0.0f },
+        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+        gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
+    );
+    c1->addComponent(cubeRenderComponent);
+
+    auto c2 = new gel::GameEntity(
+		gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+		gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+		gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
+    );
+    c2->addComponent(cubeRenderComponent);
+
+    auto c3 = new gel::GameEntity(
+        gem::Vector<float, 3> { -1.0f, 0.0f, 0.0f },
+        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+        gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
+    );
+    c3->addComponent(cubeRenderComponent);
+
+    auto c4 = new gel::GameEntity(
+        gem::Vector<float, 3> { 0.0f, 1.0f, 0.0f },
+        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+        gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
+    );
+    c4->addComponent(cubeRenderComponent);
+
+    auto c5 = new gel::GameEntity(
+        gem::Vector<float, 3> { 0.0f, -5.0f, 0.0f },
+        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+		gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f } * 5.0f
+    );
+    c5->addComponent(cubeRenderComponent);
+
+	firstCamera = new gel::GameEntity(
+        gem::Vector<float, 3> { 0.0f, 0.0f, -5.0f },
         gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
 
-    std::cout << width << std::endl;
-    std::cout << height << std::endl;
-
 	auto cameraComponent = new gel::CameraComponent(
+        90.0f, width / height, 0.1f, 1000.0f
+    );
+    cameraComponent->targetEntity = c2;
+    firstCamera->addComponent(cameraComponent);
+
+    secondCamera = new gel::GameEntity(
+        gem::Vector<float, 3> { 0.0f, 5.0f, -5.0f },
+        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+        gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
+    );
+    auto secondaryCameraComponent = new gel::CameraComponent(
         45.0f, width / height, 0.1f, 1000.0f
     );
-    cameraComponent->targetEntity = testEntity;
-    cameraEntity->addComponent(cameraComponent);
+    secondaryCameraComponent->targetEntity = c2;
+    secondCamera->addComponent(secondaryCameraComponent);
 
-	mainScene.addEntity(testEntity);
-	mainScene.addEntity(cameraEntity);
+	mainScene.addEntity(c1);
+	mainScene.addEntity(c2);
+	mainScene.addEntity(c3);
+	mainScene.addEntity(c4);
+	mainScene.addEntity(c5);
 
-	mainScene.setMainCamera(cameraComponent);
+	mainScene.addEntity(firstCamera);
+    mainScene.addEntity(secondCamera);
+
+	mainScene.setMainCamera(firstCamera);
+	mainScene.setShaderProgram(unlit_program);
 }
 
 Application::~Application()
 {
-
-    glDeleteVertexArrays(1U, &vertex_arrays);
-    glDeleteTextures(1, &texture);
-    glDeleteProgram(shader_program);
-    glDeleteShader(fragment_shader);
-    glDeleteShader(vertex_shader);
+    // Cleanup (Default)
+	glDeleteProgram(unlit_program);
+	glDeleteShader(unlit_vtx_shader);
+	glDeleteShader(unlit_frg_shader);
 }
 
 // ----------------------------------------------------------------------------
@@ -254,8 +255,9 @@ void Application::render() {
     assert(glGetError() == 0U);
     */
 
-    glDisable(GL_CULL_FACE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // see edges
+    glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     mainScene.render();
 }
 
@@ -266,6 +268,7 @@ void Application::on_resize(int width, int height) {
     IApplication::on_resize(width, height);
     // Changes the viewport.
     glViewport(0, 0, width, height);
+	mainScene.getMainCamera()->setAspectRatio(float(width) / float(height));
 }
 
 void Application::on_mouse_move(double x, double y) {}
@@ -273,22 +276,14 @@ void Application::on_mouse_move(double x, double y) {}
 void Application::on_mouse_button(int button, int action, int mods) {}
 
 void Application::on_key_pressed(int key, int scancode, int action, int mods) {
-    /*
     if (action == GLFW_PRESS) {
-        red = 0;
-        green = 0;
-        blue = 0;
         switch (key) {
-        case GLFW_KEY_R:
-            red = 1;
+        case GLFW_KEY_1:
+			mainScene.setMainCamera(firstCamera);
             break;
-        case GLFW_KEY_G:
-            green = 1;
-            break;
-        case GLFW_KEY_B:
-            blue = 1;
+        case GLFW_KEY_2:
+            mainScene.setMainCamera(secondCamera);
             break;
         }
     }
-    */
 }

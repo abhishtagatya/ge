@@ -454,10 +454,25 @@ namespace gem {
 
 			Matrix4<T> result = identity();
 
-			result[0][0] = r[0]; result[1][0] = r[1]; result[2][0] = r[2]; result[3][0] = -r.dot(eye);
-			result[0][1] = u[0]; result[1][1] = u[1]; result[2][1] = u[2]; result[3][1] = -u.dot(eye);
-			result[0][2] = -f[0]; result[1][2] = -f[1]; result[2][2] = -f[2]; result[3][2] = f.dot(eye);
-			result[0][3] = 0; result[1][3] = 0; result[2][3] = 0; result[3][3] = 1;
+			result[0][0] = r[0]; 
+			result[0][1] = r[1]; 
+			result[0][2] = r[2]; 
+			result[0][3] = -r.dot(eye);
+
+			result[1][0] = u[0]; 
+			result[1][1] = u[1]; 
+			result[1][2] = u[2]; 
+			result[1][3] = -u.dot(eye);
+
+			result[2][0] = -f[0]; 
+			result[2][1] = -f[1]; 
+			result[2][2] = -f[2]; 
+			result[2][3] = f.dot(eye);
+
+			result[3][0] = 0; 
+			result[3][1] = 0; 
+			result[3][1] = 0; 
+			result[3][3] = 1;
 
 			std::cout << "world up: " << up[0] << "," << up[1] << "," << up[2] << "\n";
 			std::cout << "front: " << f[0] << "," << f[1] << "," << f[2] << "\n";
@@ -475,8 +490,8 @@ namespace gem {
 			result[0][0] = 1 / (aspect * tanHalfFov);
 			result[1][1] = 1 / (tanHalfFov);
 			result[2][2] = -(far + near) / (far - near);
-			result[3][2] = -(2 * far * near) / (far - near);
-			result[2][3] = -1;
+			result[2][3] = -(2 * far * near) / (far - near);
+			result[3][2] = -1;
 			result[3][3] = 0;
 
 			return result;

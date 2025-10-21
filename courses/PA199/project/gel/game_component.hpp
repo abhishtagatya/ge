@@ -12,7 +12,7 @@ namespace gel {
 
 		virtual ~GameComponent() = default;
 		virtual void update(float delta_time) = 0;
-		virtual void render(gem::Matrix4<float> m, gem::Matrix4<float> v, gem::Matrix4<float> p) = 0;
+		virtual void render() = 0;
 
 		void linkEntity(GameEntity* entity) {
 			this->entity = entity;

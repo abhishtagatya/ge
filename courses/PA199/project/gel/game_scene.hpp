@@ -2,6 +2,7 @@
 
 #include "camera_component.hpp"
 #include <vector>
+#include <glad/glad.h>
 
 namespace gel {
 	class GameEntity;
@@ -38,9 +39,23 @@ namespace gel {
 			this->mainCamera_ = camera;
 		}
 
+		void setMainCamera(GameEntity* entity) {
+			if (entity) {
+				CameraComponent* camera = entity->getComponent<CameraComponent>();
+				if (camera) {
+					this->mainCamera_ = camera;
+				}
+			}
+		}
+
+		void setShaderProgram(GLuint shader_program) {
+			shader_program_ = shader_program;
+		}
+
 	private:
 		std::vector<GameEntity*> entities_;
 		CameraComponent* mainCamera_ = nullptr;
+		GLuint shader_program_ = 0;
 
 		void recursiveUpdate(GameEntity* entity, float delta_time);
 		void recursiveRender(GameEntity* entity);

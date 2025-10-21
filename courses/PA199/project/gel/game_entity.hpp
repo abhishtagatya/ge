@@ -26,6 +26,16 @@ namespace gel {
 		void addComponent(GameComponent* comp);
 		void removeComponent(GameComponent* comp);
 
+		template<typename T>
+		T* getComponent() const {
+			for (auto* comp : component_) {
+				if (auto* casted = dynamic_cast<T*>(comp)) {
+					return casted;
+				}
+			}
+			return nullptr;
+		}
+
 		const gem::Vector<float, 3>& getPosition() const { return position_; }
 		void setPosition(const gem::Vector<float, 3>& position) { position_ = position; }
 

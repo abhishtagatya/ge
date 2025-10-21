@@ -29,7 +29,9 @@ namespace gel {
 			//projectionMatrix = gem::Matrix4<float>::ortho(-2, 2, -2, 2, 0.1, 1000);
 		}
 
-		void render(gem::Matrix4<float> m, gem::Matrix4<float> v, gem::Matrix4<float> p) override {}
+		void render() override {}
+
+		void setAspectRatio(float aspect_ratio) { aspect_ratio_ = aspect_ratio; }
 
 		const gem::Matrix4<float>& getViewMatrix() const { return viewMatrix; }
 		const gem::Matrix4<float>& getProjectionMatrix() const { return projectionMatrix; }
