@@ -448,8 +448,12 @@ namespace gem {
 			const Vector<T, 3>& center,
 			const Vector<T, 3>& up)
 		{
+			Vector<T, 3> nup = up;
 			Vector<T, 3> f = (center - eye).normalize();
-			Vector<T, 3> r = f.cross(up).normalize();
+			if (f.cross(up).magnitude() < 0.001) {
+				nup = (fabs(f[1]) > 0.99f) ? Vector<T, 3>{ 0, 0, 1 } : Vector<T, 3>{ 0, 1, 0 };
+			}
+			Vector<T, 3> r = f.cross(nup).normalize();
 			Vector<T, 3> u = r.cross(f);
 
 			Matrix4<T> result = identity();
@@ -474,10 +478,12 @@ namespace gem {
 			result[3][1] = 0; 
 			result[3][3] = 1;
 
+			/*
 			std::cout << "world up: " << up[0] << "," << up[1] << "," << up[2] << "\n";
 			std::cout << "front: " << f[0] << "," << f[1] << "," << f[2] << "\n";
 			std::cout << "right: " << r[0] << "," << r[1] << "," << r[2] << "\n";
 			std::cout << "up: " << u[0] << "," << u[1] << "," << u[2] << "\n";
+			*/
 
 			return result;
 		}

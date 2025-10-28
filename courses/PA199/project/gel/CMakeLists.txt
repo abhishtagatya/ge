@@ -13,6 +13,14 @@ add_library(gel
 	"camera_component.cpp"
 	"mesh_renderer_component.hpp"
 	"mesh_renderer_component.cpp"
+	"sphere_renderer_component.hpp"
+	"sphere_renderer_component.cpp"
+	"cube_renderer_component.hpp"
+	"cube_renderer_component.cpp"
+	"plane_renderer_component.hpp"
+	"plane_renderer_component.cpp"
+	 "circle_renderer_component.hpp" 
+	 "cylinder_renderer_component.cpp"
 	"gel.hpp"
 )
 

@@ -12,16 +12,17 @@
 #include <cstdlib>
 #include <ctime>
 
-#pragma pack(push, 1)
-struct MeshRendererVAO {
-	float x, y, z;
-	float nx, ny, nz;
-	float u, v;
-};
-#pragma pack(pop)
-
 
 namespace gel {
+
+	#pragma pack(push, 1)
+	struct MeshRendererVAO {
+		float x, y, z;
+		float nx, ny, nz;
+		float u, v;
+	};
+	#pragma pack(pop)
+
 	const std::vector<gem::Vector<float, 3>> COLOR_ = {
 		{1.0f, 0.0f, 0.0f},  // Red
 		{0.0f, 1.0f, 0.0f},  // Green

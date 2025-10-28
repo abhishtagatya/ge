@@ -70,4 +70,5 @@ class Application : public IApplication {
     // Game Entity
 	gel::GameEntity* firstCamera = nullptr;
 	gel::GameEntity* secondCamera = nullptr;
+	gel::GameEntity* thirdCamera = nullptr;
 };

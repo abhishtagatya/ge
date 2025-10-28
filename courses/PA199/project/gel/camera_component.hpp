@@ -26,7 +26,6 @@ namespace gel {
 			}
 
 			projectionMatrix = gem::Matrix4<float>::perspective(fov_, aspect_ratio_, near_plane_, far_plane_);
-			//projectionMatrix = gem::Matrix4<float>::ortho(-2, 2, -2, 2, 0.1, 1000);
 		}
 
 		void render() override {}

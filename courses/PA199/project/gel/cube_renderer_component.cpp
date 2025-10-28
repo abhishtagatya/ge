@@ -1,0 +1,1 @@
+#include "cube_renderer_component.hpp"

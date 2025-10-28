@@ -15,6 +15,9 @@ namespace gem {
 		T& r() { return data[0]; }
 		T& theta() { return data[1]; }
 
+		const T& r() const { return data[0]; }
+		const T& theta() const { return data[1]; }
+
 		Polar<T> normalize() const {
 			// angle normalization
 			T angle = std::fmod(theta(), 2 * M_PI);
@@ -23,10 +26,10 @@ namespace gem {
 		}
 		
 		Vector<T, 2> toCartesian() const {
-			return Vector<T, 2>(
-				r() * std::cos(theta()), 
-				r() * std::sin(theta())
-			);
+			return Vector<T, 2>{
+				r()* std::cos(theta()),
+				r()* std::sin(theta())
+			};
 		}
 
 		static Polar<T> fromCartesian(const Vector<T, 2>& v) {

@@ -94,93 +94,32 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
 
 	GLuint texture = load_texture(lecture_folder_path / "data" / "textures" / "container.png");
 
-    std::vector<MeshRendererVAO> cubeVertices = {
-        // Front face (z+)
-        { -0.5f, -0.5f,  0.5f, 0,0,1, 0,0 },
-        {  0.5f, -0.5f,  0.5f, 0,0,1, 1,0 },
-        {  0.5f,  0.5f,  0.5f, 0,0,1, 1,1 },
-        { -0.5f,  0.5f,  0.5f, 0,0,1, 0,1 },
-
-        // Back face (z-)
-        {  0.5f, -0.5f, -0.5f, 0,0,-1, 0,0 },
-        { -0.5f, -0.5f, -0.5f, 0,0,-1, 1,0 },
-        { -0.5f,  0.5f, -0.5f, 0,0,-1, 1,1 },
-        {  0.5f,  0.5f, -0.5f, 0,0,-1, 0,1 },
-
-        // Left face (x-)
-        { -0.5f, -0.5f, -0.5f, -1,0,0, 0,0 },
-        { -0.5f, -0.5f,  0.5f, -1,0,0, 1,0 },
-        { -0.5f,  0.5f,  0.5f, -1,0,0, 1,1 },
-        { -0.5f,  0.5f, -0.5f, -1,0,0, 0,1 },
-
-        // Right face (x+)
-        {  0.5f, -0.5f,  0.5f, 1,0,0, 0,0 },
-        {  0.5f, -0.5f, -0.5f, 1,0,0, 1,0 },
-        {  0.5f,  0.5f, -0.5f, 1,0,0, 1,1 },
-        {  0.5f,  0.5f,  0.5f, 1,0,0, 0,1 },
-
-        // Top face (y+)
-        { -0.5f,  0.5f,  0.5f, 0,1,0, 0,0 },
-        {  0.5f,  0.5f,  0.5f, 0,1,0, 1,0 },
-        {  0.5f,  0.5f, -0.5f, 0,1,0, 1,1 },
-        { -0.5f,  0.5f, -0.5f, 0,1,0, 0,1 },
-
-        // Bottom face (y-)
-        { -0.5f, -0.5f, -0.5f, 0,-1,0, 0,0 },
-        {  0.5f, -0.5f, -0.5f, 0,-1,0, 1,0 },
-        {  0.5f, -0.5f,  0.5f, 0,-1,0, 1,1 },
-        { -0.5f, -0.5f,  0.5f, 0,-1,0, 0,1 }
-    };
-
-    std::vector<unsigned int> cubeIndices = {
-        0, 1, 2, 0, 2, 3,       // Front
-        4, 5, 6, 4, 6, 7,       // Back
-        8, 9,10, 8,10,11,       // Left
-        12,13,14, 12,14,15,     // Right
-        16,17,18, 16,18,19,     // Top
-        20,21,22, 20,22,23      // Bottom
-    };
-
-    auto cubeRenderComponent = new gel::MeshRendererComponent(
-        cubeVertices,
-        cubeIndices,
-        texture
-    );
-
-	auto c1 = new gel::GameEntity(
-        gem::Vector<float, 3> { 1.0f, 0.0f, 0.0f },
-        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
-        gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
-    );
-    c1->addComponent(cubeRenderComponent);
+    auto cubeRenderComponent = new gel::CubeRendererComponent();
+    auto sphereRenderComponent = new gel::SphereRendererComponent(0.5f, 6, 6);
+	auto planeRenderComponent = new gel::PlaneRendererComponent(1.0f, 10.0f);
+	auto circleRenderComponent = new gel::CircleRendererComponent(1.0f, 16);
+	auto cylinderRenderComponent = new gel::CylinderRendererComponent(0.5f, 16, 1.0f);
 
     auto c2 = new gel::GameEntity(
-		gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
-		gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
-		gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
+		gem::Vector<float, 3> { 0.0f, 0.0f, -1.0f },
+		gem::Vector<float, 3> { M_PI / 2.0f, 0.0f, 0.0f },
+		gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f } * 0.5f
     );
-    c2->addComponent(cubeRenderComponent);
+    c2->addComponent(sphereRenderComponent);
 
     auto c3 = new gel::GameEntity(
-        gem::Vector<float, 3> { -1.0f, 0.0f, 0.0f },
+        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
         gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
-    c3->addComponent(cubeRenderComponent);
-
-    auto c4 = new gel::GameEntity(
-        gem::Vector<float, 3> { 0.0f, 1.0f, 0.0f },
-        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
-        gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
-    );
-    c4->addComponent(cubeRenderComponent);
+	c3->addComponent(cylinderRenderComponent);
 
     auto c5 = new gel::GameEntity(
-        gem::Vector<float, 3> { 0.0f, -5.0f, 0.0f },
+        gem::Vector<float, 3> { 0.0f, -1.0f, 0.0f },
         gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
-		gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f } * 5.0f
+		gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f } * 3.0f
     );
-    c5->addComponent(cubeRenderComponent);
+    c5->addComponent(circleRenderComponent);
 
 	firstCamera = new gel::GameEntity(
         gem::Vector<float, 3> { 0.0f, 0.0f, -5.0f },
@@ -188,31 +127,44 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
 
-	auto cameraComponent = new gel::CameraComponent(
+	auto cc1 = new gel::CameraComponent(
         90.0f, width / height, 0.1f, 1000.0f
     );
-    cameraComponent->targetEntity = c2;
-    firstCamera->addComponent(cameraComponent);
+    cc1->targetEntity = c3;
+
+    firstCamera->addComponent(cc1);
+
+    auto cc2 = new gel::CameraComponent(
+        90.0f, width / height, 0.1f, 1000.0f
+    );
+    cc2->targetEntity = c3;
 
     secondCamera = new gel::GameEntity(
         gem::Vector<float, 3> { 0.0f, 5.0f, -5.0f },
         gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
-    auto secondaryCameraComponent = new gel::CameraComponent(
-        45.0f, width / height, 0.1f, 1000.0f
-    );
-    secondaryCameraComponent->targetEntity = c2;
-    secondCamera->addComponent(secondaryCameraComponent);
+    secondCamera->addComponent(cc2);
 
-	mainScene.addEntity(c1);
+    auto cc3 = new gel::CameraComponent(
+        90.0f, width / height, 0.1f, 1000.0f
+    );
+    cc3->targetEntity = c3;
+
+    thirdCamera = new gel::GameEntity(
+        gem::Vector<float, 3> {0.0f, 5.0f, 0.0f },
+        gem::Vector<float, 3> {0.0f, 0.0f, 0.0f },
+        gem::Vector<float, 3> {1.0f, 1.0f, 1.0f }
+    );
+    thirdCamera->addComponent(cc3);
+
 	mainScene.addEntity(c2);
 	mainScene.addEntity(c3);
-	mainScene.addEntity(c4);
 	mainScene.addEntity(c5);
 
 	mainScene.addEntity(firstCamera);
     mainScene.addEntity(secondCamera);
+	mainScene.addEntity(thirdCamera);
 
 	mainScene.setMainCamera(firstCamera);
 	mainScene.setShaderProgram(unlit_program);
@@ -242,22 +194,9 @@ void Application::render() {
     glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    /*
-    glUseProgram(shader_program);
-    assert(glGetError() == 0U);
-    glBindVertexArray(vertex_arrays);
-    assert(glGetError() == 0U);
-    glActiveTexture(GL_TEXTURE0);
-    assert(glGetError() == 0U);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    assert(glGetError() == 0U);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-    assert(glGetError() == 0U);
-    */
-
     glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     mainScene.render();
 }
 
@@ -280,10 +219,18 @@ void Application::on_key_pressed(int key, int scancode, int action, int mods) {
         switch (key) {
         case GLFW_KEY_1:
 			mainScene.setMainCamera(firstCamera);
+            std::cout << "First Camera Active" << std::endl;
             break;
         case GLFW_KEY_2:
             mainScene.setMainCamera(secondCamera);
+			std::cout << "Second Camera Active" << std::endl;
+            break;
+        case GLFW_KEY_3:
+            mainScene.setMainCamera(thirdCamera);
+            std::cout << "Third Camera Active" << std::endl;
             break;
         }
+
+        mainScene.getMainCamera()->setAspectRatio(float(width) / float(height));
     }
 }
