@@ -1,6 +1,6 @@
 #include "game_scene.hpp"
 #include "game_entity.hpp"
-#include "mesh_renderer_component.hpp"
+#include "renderer/mesh_renderer_component.hpp"
 
 namespace gel {
 
@@ -39,6 +39,9 @@ namespace gel {
 				glUniform3f(glGetUniformLocation(shader_program_, "unlit_color"), mrc_color[0], mrc_color[1], mrc_color[2]);
 				glUniform1i(glGetUniformLocation(shader_program_, "use_texture"), 0);
 			}
+
+			gem::Matrix4<float> viewPos = mainCamera_->getEntity()->getWorldTransform();
+			glUniform3f(glGetUniformLocation(shader_program_, "view_pos"), viewPos[0][3], viewPos[1][3], viewPos[2][3]);
 
 			mrc->render();
 		}

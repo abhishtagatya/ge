@@ -1,6 +1,6 @@
 #pragma once
 
-#include "camera_component.hpp"
+#include "camera/camera_component.hpp"
 #include <vector>
 #include <glad/glad.h>
 

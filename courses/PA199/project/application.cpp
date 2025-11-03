@@ -88,8 +88,8 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    unlit_vtx_shader = load_shader(lecture_folder_path / "data" / "shaders" / "default.vert", GL_VERTEX_SHADER);
-    unlit_frg_shader = load_shader(lecture_folder_path / "data" / "shaders" / "default.frag", GL_FRAGMENT_SHADER);
+    unlit_vtx_shader = load_shader(lecture_folder_path / "data" / "shaders" / "lit.vert", GL_VERTEX_SHADER);
+    unlit_frg_shader = load_shader(lecture_folder_path / "data" / "shaders" / "lit.frag", GL_FRAGMENT_SHADER);
     unlit_program = create_shader_program(unlit_vtx_shader, unlit_frg_shader);
 
 	GLuint texture = load_texture(lecture_folder_path / "data" / "textures" / "container.png");
