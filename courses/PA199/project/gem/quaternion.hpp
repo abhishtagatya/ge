@@ -26,6 +26,11 @@ namespace gem {
 		T& y() { return data[2]; }
 		T& z() { return data[3]; }
 
+		const T& x() const { return data[1]; }
+		const T& y() const { return data[2]; }
+		const T& z() const { return data[3]; }
+		const T& w() const { return data[0]; }
+
 		// ADDITION OPERATORS
 		// -------------------------------
 
@@ -124,6 +129,13 @@ namespace gem {
 			} else {
 				return AxisAngle<T>(angle, q.x() / s, q.y() / s, q.z() / s);
 			}
+		}
+
+		Vector<T, 3> rotate(const Vector<T, 3>& vec) const {
+			Quaternion<T> p(0, vec[0], vec[1], vec[2]);
+			Quaternion<T> q_conj = conjugate();
+			Quaternion<T> result = (*this) * p * q_conj;
+			return Vector<T, 3>{ result.x(), result.y(), result.z() };
 		}
 	};
 }

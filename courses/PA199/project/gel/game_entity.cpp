@@ -25,10 +25,11 @@ namespace gel {
 
 	gem::Matrix4<float> GameEntity::getLocalTransform() const {
 		gem::Matrix4<float> t = gem::Matrix4<float>::translation(position_);
-		gem::Matrix4<float> r = \
+		/*gem::Matrix4<float> r = \
 			gem::Matrix4<float>::rotationZ(orientation_[2]) *
 			gem::Matrix4<float>::rotationY(orientation_[1]) *
-			gem::Matrix4<float>::rotationX(orientation_[0]);
+			gem::Matrix4<float>::rotationX(orientation_[0]);*/
+		gem::Matrix4<float> r = gem::Matrix4<float>::rotation(orientation_);
 		gem::Matrix4<float> s = gem::Matrix4<float>::scale(scale_);
 
 		return t * r * s;
@@ -51,17 +52,26 @@ namespace gel {
 	}
 
 	gem::Vector<float, 3> GameEntity::getRightVector() const {
-		gem::Matrix4<float> worldTransform = getWorldTransform();
-		return gem::Vector<float, 3>{ worldTransform[0][0], worldTransform[1][0], worldTransform[2][0] }.normalize();
+		/*gem::Matrix4<float> worldTransform = getWorldTransform();
+		return gem::Vector<float, 3>{ worldTransform[0][0], worldTransform[1][0], worldTransform[2][0] }.normalize();*/
+
+		gem::Vector<float, 3> right = orientation_.rotate({ 1.0f, 0.0f, 0.0f });
+		return right.normalize();
 	}
 
 	gem::Vector<float, 3> GameEntity::getUpVector() const {
-		gem::Matrix4<float> worldTransform = getWorldTransform();
-		return gem::Vector<float, 3>{ worldTransform[0][1], worldTransform[1][1], worldTransform[2][1] }.normalize();
+		/*gem::Matrix4<float> worldTransform = getWorldTransform();
+		return gem::Vector<float, 3>{ worldTransform[0][1], worldTransform[1][1], worldTransform[2][1] }.normalize(); */
+
+		gem::Vector<float, 3> up = orientation_.rotate({ 0.0f, 1.0f, 0.0f });
+		return up.normalize();
 	}
 
 	gem::Vector<float, 3> GameEntity::getForwardVector() const {
-		gem::Matrix4<float> worldTransform = getWorldTransform();
-		return gem::Vector<float, 3>{ worldTransform[0][2], worldTransform[1][2], worldTransform[2][2] }.normalize();
+		/*gem::Matrix4<float> worldTransform = getWorldTransform();
+		return gem::Vector<float, 3>{ worldTransform[0][2], worldTransform[1][2], worldTransform[2][2] }.normalize(); */
+		
+		gem::Vector<float, 3> forward = orientation_.rotate({ 0.0f, 0.0f, 1.0f });
+		return forward.normalize();
 	}
 }

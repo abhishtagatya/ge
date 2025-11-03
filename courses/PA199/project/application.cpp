@@ -94,36 +94,36 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
 
 	GLuint texture = load_texture(lecture_folder_path / "data" / "textures" / "container.png");
 
-    auto cubeRenderComponent = new gel::CubeRendererComponent();
+    auto cubeRenderComponent = new gel::CubeRendererComponent(texture);
     auto sphereRenderComponent = new gel::SphereRendererComponent(0.5f, 6, 6);
 	auto planeRenderComponent = new gel::PlaneRendererComponent(1.0f, 10.0f);
-	auto circleRenderComponent = new gel::CircleRendererComponent(1.0f, 16);
+	auto circleRenderComponent = new gel::CircleRendererComponent(1.0f, 16, texture);
 	auto cylinderRenderComponent = new gel::CylinderRendererComponent(0.5f, 16, 1.0f);
 
     auto c2 = new gel::GameEntity(
 		gem::Vector<float, 3> { 0.0f, 0.0f, -1.0f },
-		gem::Vector<float, 3> { M_PI / 2.0f, 0.0f, 0.0f },
+		gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
 		gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f } * 0.5f
     );
     c2->addComponent(sphereRenderComponent);
 
     auto c3 = new gel::GameEntity(
         gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
-        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+        gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
 	c3->addComponent(cylinderRenderComponent);
 
     auto c5 = new gel::GameEntity(
-        gem::Vector<float, 3> { 0.0f, -1.0f, 0.0f },
-        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+        gem::Vector<float, 3> { 0.0f, -0.5f, 0.0f },
+        gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
 		gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f } * 3.0f
     );
     c5->addComponent(circleRenderComponent);
 
 	firstCamera = new gel::GameEntity(
         gem::Vector<float, 3> { 0.0f, 0.0f, -5.0f },
-        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+        gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
 
@@ -141,7 +141,7 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
 
     secondCamera = new gel::GameEntity(
         gem::Vector<float, 3> { 0.0f, 5.0f, -5.0f },
-        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
+        gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
     secondCamera->addComponent(cc2);
@@ -153,7 +153,7 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
 
     thirdCamera = new gel::GameEntity(
         gem::Vector<float, 3> {0.0f, 5.0f, 0.0f },
-        gem::Vector<float, 3> {0.0f, 0.0f, 0.0f },
+        gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
         gem::Vector<float, 3> {1.0f, 1.0f, 1.0f }
     );
     thirdCamera->addComponent(cc3);
@@ -196,7 +196,7 @@ void Application::render() {
 
     glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     mainScene.render();
 }
 

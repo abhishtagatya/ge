@@ -13,7 +13,7 @@ namespace gel {
 		GameEntity() = default;
 
 		GameEntity(const gem::Vector<float, 3>& position,
-			const gem::Vector<float, 3>& orientation,
+			const gem::Quaternion<float>& orientation,
 			const gem::Vector<float, 3>& scale)
 			: position_(position), orientation_(orientation), scale_(scale) {
 		}
@@ -39,8 +39,8 @@ namespace gel {
 		const gem::Vector<float, 3>& getPosition() const { return position_; }
 		void setPosition(const gem::Vector<float, 3>& position) { position_ = position; }
 
-		const gem::Vector<float, 3>& getOrientation() const { return orientation_; }
-		void setOrientation(const gem::Vector<float, 3>& orientation) { orientation_ = orientation; }
+		const gem::Quaternion<float>& getOrientation() const { return orientation_; }
+		void setOrientation(const gem::Quaternion<float>& orientation) { orientation_ = orientation; }
 
 		const gem::Vector<float, 3>& getScale() const { return scale_; }
 		void setScale(const gem::Vector<float, 3>& scale) { scale_ = scale; }
@@ -60,7 +60,7 @@ namespace gel {
 
 	private:
 		gem::Vector<float, 3> position_{ 0.0f, 0.0f, 0.0f };
-		gem::Vector<float, 3> orientation_{ 0.0f, 0.0f, 0.0f };
+		gem::Quaternion<float> orientation_{ 1.0f, 0.0f, 0.0f, 0.0f };
 		gem::Vector<float, 3> scale_{ 1.0f, 1.0f, 1.0f };
 
 		GameEntity* parent_ = nullptr;

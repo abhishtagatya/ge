@@ -10,6 +10,9 @@ namespace gem {
 	struct Vector; // Forward declaration
 
 	template <typename T>
+	struct Quaternion; // Forward declaration
+
+	template <typename T>
 	struct Matrix4 {
 		std::array<std::array<T, 4>, 4> data;
 
@@ -101,6 +104,32 @@ namespace gem {
 			T s = std::sin(angle);
 			result.data[0][0] = c;  result.data[0][1] = -s;
 			result.data[1][0] = s;  result.data[1][1] = c;
+			return result;
+		}
+
+		static Matrix4 rotation(const Quaternion<T>& q) {
+			Matrix4<T> result = identity();
+
+			T xx = q.x() * q.x();
+			T yy = q.y() * q.y();
+			T zz = q.z() * q.z();
+			T xy = q.x() * q.y();
+			T xz = q.x() * q.z();
+			T yz = q.y() * q.z();
+			T wx = q.w() * q.x();
+			T wy = q.w() * q.y();
+			T wz = q.w() * q.z();
+
+			result.data[0][0] = 1 - 2 * (yy + zz);
+			result.data[0][1] = 2 * (xy - wz);
+			result.data[0][2] = 2 * (xz + wy);
+			result.data[1][0] = 2 * (xy + wz);
+			result.data[1][1] = 1 - 2 * (xx + zz);
+			result.data[1][2] = 2 * (yz - wx);
+			result.data[2][0] = 2 * (xz - wy);
+			result.data[2][1] = 2 * (yz + wx);
+			result.data[2][2] = 1 - 2 * (xx + yy);
+
 			return result;
 		}
 
