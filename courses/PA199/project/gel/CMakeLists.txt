@@ -11,6 +11,8 @@ add_library(gel
 	"test_component.cpp" 
 	"camera/camera_component.hpp"
 	"camera/camera_component.cpp"
+	"renderer/renderer_component.hpp"
+	"renderer/renderer_component.cpp"
 	"renderer/mesh_renderer_component.hpp"
 	"renderer/mesh_renderer_component.cpp"
 	"renderer/sphere_renderer_component.hpp"
@@ -20,11 +22,19 @@ add_library(gel
 	"renderer/plane_renderer_component.hpp"
 	"renderer/plane_renderer_component.cpp"
 	"renderer/circle_renderer_component.hpp" 
+	"renderer/cylinder_renderer_component.hpp"
 	"renderer/cylinder_renderer_component.cpp"
+	"renderer/arc_renderer_component.hpp"
+	"renderer/arc_renderer_component.cpp"
 	"light/light_component.hpp"
 	"light/light_component.cpp"
+	"light/directional_light_component.hpp"
+	"light/directional_light_component.cpp"
+	"light/point_light_component.hpp"
+	"light/point_light_component.cpp"
+	"util/shader_resource.hpp"
 	"gel.hpp"
-  "light/directional_light_component.cpp")
+)
 
 target_include_directories(gel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

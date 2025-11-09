@@ -25,10 +25,6 @@ class Application : public IApplication {
     GLuint index_buffer;
     GLuint texture;
 
-    GLuint unlit_vtx_shader;
-    GLuint unlit_frg_shader;
-    GLuint unlit_program;
-
     // ----------------------------------------------------------------------------
     // Constructors & Destructors
     // ----------------------------------------------------------------------------

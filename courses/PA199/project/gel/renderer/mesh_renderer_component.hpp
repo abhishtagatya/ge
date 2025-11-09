@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game_component.hpp"
+#include "renderer_component.hpp"
 #include "game_entity.hpp"
 #include "gem.hpp"
 
@@ -33,7 +34,7 @@ namespace gel {
 		{1.0f, 0.5f, 0.0f}   // Orange
 	};
 
-	class MeshRendererComponent : public GameComponent {
+	class MeshRendererComponent : public RendererComponent {
 	public:
 		MeshRendererComponent(
 			const std::vector<MeshRendererVAO>& vertices, 

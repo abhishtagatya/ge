@@ -15,6 +15,10 @@ namespace gel {
 			specular_(specular) {
 		}
 
+		void update(float delta_time) override {}
+
+		void render() override {}
+
 		gem::Vector<float, 3> getAmbient() const {
 			return ambient_;
 		}

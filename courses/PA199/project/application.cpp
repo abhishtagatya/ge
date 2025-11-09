@@ -58,7 +58,7 @@ static GLuint load_texture(std::filesystem::path const& path)
     return texture;
 }
 
-static GLuint create_shader_program(GLuint const  vertex_shader, GLuint const  fragment_shader) {
+static GLuint create_shader_program(GLuint const  vertex_shader, GLuint const fragment_shader) {
     GLuint const shader_program = glCreateProgram();
 
     assert(glGetError() == 0U && shader_program != 0);
@@ -88,95 +88,159 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    unlit_vtx_shader = load_shader(lecture_folder_path / "data" / "shaders" / "lit.vert", GL_VERTEX_SHADER);
-    unlit_frg_shader = load_shader(lecture_folder_path / "data" / "shaders" / "lit.frag", GL_FRAGMENT_SHADER);
-    unlit_program = create_shader_program(unlit_vtx_shader, unlit_frg_shader);
+    GLuint unlit_vtx_shader = load_shader(lecture_folder_path / "data" / "shaders" / "unlit.vert", GL_VERTEX_SHADER);
+    GLuint unlit_frg_shader = load_shader(lecture_folder_path / "data" / "shaders" / "unlit.frag", GL_FRAGMENT_SHADER);
+    GLuint unlit_program = create_shader_program(unlit_vtx_shader, unlit_frg_shader);
 
-	GLuint texture = load_texture(lecture_folder_path / "data" / "textures" / "container.png");
+    GLuint lit_vtx_shader = load_shader(lecture_folder_path / "data" / "shaders" / "lit.vert", GL_VERTEX_SHADER);
+    GLuint lit_frg_shader = load_shader(lecture_folder_path / "data" / "shaders" / "lit.frag", GL_FRAGMENT_SHADER);
+    GLuint lit_program = create_shader_program(lit_vtx_shader, lit_frg_shader);
 
-    auto cubeRenderComponent = new gel::CubeRendererComponent(texture);
-    auto sphereRenderComponent = new gel::SphereRendererComponent(0.5f, 6, 6);
-	auto planeRenderComponent = new gel::PlaneRendererComponent(1.0f, 10.0f);
-	auto circleRenderComponent = new gel::CircleRendererComponent(1.0f, 16, texture);
-	auto cylinderRenderComponent = new gel::CylinderRendererComponent(0.5f, 16, 1.0f);
+    mainScene.addShaderResource("UNLIT", unlit_vtx_shader, unlit_frg_shader, unlit_program);
+    mainScene.addShaderResource("LIT", lit_vtx_shader, lit_frg_shader, lit_program);
 
-    auto c2 = new gel::GameEntity(
-		gem::Vector<float, 3> { 0.0f, 0.0f, -1.0f },
+	GLuint grass_texture = load_texture(lecture_folder_path / "data" / "textures" / "grass.png");
+	GLuint grey_moss_texture = load_texture(lecture_folder_path / "data" / "textures" / "grey_moss.png");
+	GLuint black_moss_texture = load_texture(lecture_folder_path / "data" / "textures" / "black_moss.png");
+	GLuint green_moss_texture = load_texture(lecture_folder_path / "data" / "textures" / "green_moss.png");
+	GLuint brown_moss_texture = load_texture(lecture_folder_path / "data" / "textures" / "brown_moss.png");
+	GLuint metal_texture = load_texture(lecture_folder_path / "data" / "textures" / "metal.png");
+
+    auto ball_sphere = new gel::SphereRendererComponent(0.5f, 9, 9, metal_texture);
+	auto platform_circle = new gel::CircleRendererComponent(1.75f, 32, grass_texture);
+
+    auto ball = new gel::GameEntity(
+		gem::Vector<float, 3> { 0.0f, -0.25f, -2.5f },
 		gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
 		gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f } * 0.5f
     );
-    c2->addComponent(sphereRenderComponent);
+    ball->addComponent(ball_sphere);
 
-    auto c3 = new gel::GameEntity(
-        gem::Vector<float, 3> { 0.0f, 0.0f, 0.0f },
-        gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
+    int layer = 3;
+	int blocks_per_layer = 6;
+	float offset = 0.5f;
+    float ringAngle = (float)(M_PI * 2.0f) / blocks_per_layer;
+
+    auto arcBlack = new gel::ArcRendererComponent(1.0f, 1.5f, 16, 0.5f, ringAngle, black_moss_texture);
+    auto arcGreen = new gel::ArcRendererComponent(1.0f, 1.5f, 16, 0.5f, ringAngle, green_moss_texture);
+
+    for (int i = 0; i < layer; i++) {
+        for (int j = 0; j < blocks_per_layer; j++) {
+            auto block = new gel::GameEntity(
+                gem::Vector<float, 3> { 0.0f, -0.25f + (i * offset), 0.0f },
+                gem::AxisAngle{ (ringAngle * i) + (ringAngle * j), 0.0f, 1.0f, 0.0f }.toQuaternion(),
+                gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
+            );
+
+            if (j % 2 == 0)
+                block->addComponent(arcBlack);
+			else
+                block->addComponent(arcGreen);
+
+            mainScene.addEntity(block);
+		}
+    }
+
+    auto paddle_ring = new gel::ArcRendererComponent(4.25f, 5.0f, 16, 0.5f, (float)(M_PI * 2.0f) / 8.0f, brown_moss_texture);
+    auto paddle_a = new gel::GameEntity(
+        gem::Vector<float, 3> { 0.0f, -0.25f, 0.0f },
+        gem::AxisAngle{ 1.0f, 0.0f, 0.0f, 0.0f }.toQuaternion(),
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
-	c3->addComponent(cylinderRenderComponent);
+	paddle_a->addComponent(paddle_ring);
 
-    auto c5 = new gel::GameEntity(
+    auto paddle_b = new gel::GameEntity(
+        gem::Vector<float, 3> { 0.0f, -0.25f, 0.0f },
+        gem::AxisAngle{ (float)(M_PI), 0.0f, 1.0f, 0.0f}.toQuaternion(),
+        gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
+    );
+    paddle_b->addComponent(paddle_ring);
+	
+    mainScene.addEntity(paddle_a);
+    mainScene.addEntity(paddle_b);
+
+    auto platform = new gel::GameEntity(
         gem::Vector<float, 3> { 0.0f, -0.5f, 0.0f },
         gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
 		gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f } * 3.0f
     );
-    c5->addComponent(circleRenderComponent);
+    platform->addComponent(platform_circle);
 
 	firstCamera = new gel::GameEntity(
-        gem::Vector<float, 3> { 0.0f, 0.0f, -5.0f },
+        gem::Vector<float, 3> { 0.0f, 0.0f, -7.0f },
         gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
-
 	auto cc1 = new gel::CameraComponent(
         90.0f, width / height, 0.1f, 1000.0f
     );
-    cc1->targetEntity = c3;
-
+    cc1->targetEntity = platform;
     firstCamera->addComponent(cc1);
 
-    auto cc2 = new gel::CameraComponent(
-        90.0f, width / height, 0.1f, 1000.0f
-    );
-    cc2->targetEntity = c3;
-
     secondCamera = new gel::GameEntity(
-        gem::Vector<float, 3> { 0.0f, 5.0f, -5.0f },
+        gem::Vector<float, 3> { 0.0f, 7.0f, -7.0f },
         gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
-    secondCamera->addComponent(cc2);
-
-    auto cc3 = new gel::CameraComponent(
+    auto cc2 = new gel::CameraComponent(
         90.0f, width / height, 0.1f, 1000.0f
     );
-    cc3->targetEntity = c3;
+    cc2->targetEntity = platform;
+    secondCamera->addComponent(cc2);
 
     thirdCamera = new gel::GameEntity(
-        gem::Vector<float, 3> {0.0f, 5.0f, 0.0f },
+        gem::Vector<float, 3> {0.0f, 7.0f, 0.0f },
         gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
         gem::Vector<float, 3> {1.0f, 1.0f, 1.0f }
     );
+    auto cc3 = new gel::CameraComponent(
+        90.0f, width / height, 0.1f, 1000.0f
+    );
+    cc3->targetEntity = platform;
     thirdCamera->addComponent(cc3);
 
-	mainScene.addEntity(c2);
-	mainScene.addEntity(c3);
-	mainScene.addEntity(c5);
+    auto sunLight = new gel::DirectionalLightComponent(
+        gem::Vector<float, 3> {0.2f, 0.2f, 0.2f },
+        gem::Vector<float, 3> {0.8f, 0.8f, 0.8f },
+        gem::Vector<float, 3> {1.0f, 1.0f, 1.0f }
+    );
+
+    auto directLight = new gel::GameEntity(
+        gem::Vector<float, 3> { 0.0f, 5.0f, -5.0f },
+		gem::AxisAngle{ (float)(-M_PI / 8.0f), 1.0f, 0.0f, 0.0f }.toQuaternion(),
+        gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
+	);
+    directLight->addComponent(sunLight);
+	mainScene.addEntity(directLight);
+
+    auto l1 = new gel::PointLightComponent(
+        gem::Vector<float, 3> {0.4f, 0.4f, 0.4f },
+        gem::Vector<float, 3> {0.8f, 0.8f, 0.8f },
+        gem::Vector<float, 3> {1.0f, 1.0f, 1.0f },
+        10.0f
+    );
+    auto pointLight = new gel::GameEntity(
+        gem::Vector<float, 3> {0.0f, 7.0f, 0.0f },
+        gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
+        gem::Vector<float, 3> {1.0f, 1.0f, 1.0f }
+	);
+	pointLight->addComponent(l1);
+	mainScene.addEntity(pointLight);
+	mainScene.addExtraLight(l1);
+
+	mainScene.addEntity(ball);
+	mainScene.addEntity(platform);
 
 	mainScene.addEntity(firstCamera);
     mainScene.addEntity(secondCamera);
 	mainScene.addEntity(thirdCamera);
 
 	mainScene.setMainCamera(firstCamera);
-	mainScene.setShaderProgram(unlit_program);
+	mainScene.setMainLight(sunLight);
 }
 
 Application::~Application()
-{
-    // Cleanup (Default)
-	glDeleteProgram(unlit_program);
-	glDeleteShader(unlit_vtx_shader);
-	glDeleteShader(unlit_frg_shader);
-}
+{}
 
 // ----------------------------------------------------------------------------
 // Methods
@@ -194,8 +258,8 @@ void Application::render() {
     glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+    glDisable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);h
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     mainScene.render();
 }
@@ -228,6 +292,14 @@ void Application::on_key_pressed(int key, int scancode, int action, int mods) {
         case GLFW_KEY_3:
             mainScene.setMainCamera(thirdCamera);
             std::cout << "Third Camera Active" << std::endl;
+            break;
+        case GLFW_KEY_9:
+            mainScene.useShaderProgram("UNLIT");
+            std::cout << "Unlit Shader Active" << std::endl;
+            break;
+        case GLFW_KEY_0:
+            mainScene.useShaderProgram("LIT");
+            std::cout << "Lit Shader Active" << std::endl;
             break;
         }
 
