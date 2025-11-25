@@ -31,6 +31,7 @@ namespace gel {
 		void update(float delta_time);
 		void setupLights();
 		void render();
+		void handleKeyPressed(int key, int scancode, int action, int mods);
 
 		void addEntity(GameEntity* entity) {
 			entities_.push_back(entity);
@@ -114,5 +115,6 @@ namespace gel {
 
 		void recursiveUpdate(GameEntity* entity, float delta_time);
 		void recursiveRender(GameEntity* entity);
+		void recursiveHandleKeyPressed(GameEntity* entity, int key, int scancode, int action, int mods);
 	};
 }

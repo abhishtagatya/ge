@@ -15,4 +15,5 @@
 #include "light/light_component.hpp"
 #include "light/directional_light_component.hpp"
 #include "light/point_light_component.hpp"
+#include "control/paddle_controller_component.hpp"
 #include "game_scene.hpp"

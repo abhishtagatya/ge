@@ -13,6 +13,7 @@ namespace gel {
 		virtual ~GameComponent() = default;
 		virtual void update(float delta_time) = 0;
 		virtual void render() = 0;
+		virtual void handleKeyPressed(int key, int scancode, int action, int mods) {}
 
 		void linkEntity(GameEntity* entity) {
 			this->entity = entity;

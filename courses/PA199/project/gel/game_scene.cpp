@@ -95,6 +95,16 @@ namespace gel {
 		}
 	}
 
+	void GameScene::recursiveHandleKeyPressed(GameEntity* entity, int key, int scancode, int action, int mods) {
+		for (auto* comp : entity->getComponents()) {
+			comp->handleKeyPressed(key, scancode, action, mods);
+		}
+
+		for (auto* child : entity->getChildren()) {
+			recursiveHandleKeyPressed(child, key, scancode, action, mods);
+		}
+	}
+
 	void GameScene::update(float delta_time) {
 		for (auto* entity : entities_) {
 			recursiveUpdate(entity, delta_time);
@@ -114,6 +124,12 @@ namespace gel {
 
 		for (auto* entity : entities_) {
 			recursiveRender(entity);
+		}
+	}
+
+	void GameScene::handleKeyPressed(int key, int scancode, int action, int mods) {
+		for (auto* entity : entities_) {
+			recursiveHandleKeyPressed(entity, key, scancode, action, mods);
 		}
 	}
 }

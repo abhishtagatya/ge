@@ -58,6 +58,14 @@ namespace gel {
 		gem::Vector<float, 3> getRightVector() const;
 		gem::Vector<float, 3> getForwardVector() const;
 
+		void rotate(const gem::AxisAngle<float> rotateBy) {
+			gem::AxisAngle<float> aa(rotateBy.angle(), rotateBy.axis()[0], rotateBy.axis()[1], rotateBy.axis()[2]);
+			gem::Quaternion<float> q = aa.toQuaternion();
+
+			orientation_ = orientation_ * q;
+			orientation_ = orientation_.normalize();
+		}
+
 	private:
 		gem::Vector<float, 3> position_{ 0.0f, 0.0f, 0.0f };
 		gem::Quaternion<float> orientation_{ 1.0f, 0.0f, 0.0f, 0.0f };

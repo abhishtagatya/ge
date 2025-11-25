@@ -33,6 +33,8 @@ add_library(gel
 	"light/point_light_component.hpp"
 	"light/point_light_component.cpp"
 	"util/shader_resource.hpp"
+	"control/paddle_controller_component.hpp"
+	"control/paddle_controller_component.cpp"
 	"gel.hpp"
 )
 

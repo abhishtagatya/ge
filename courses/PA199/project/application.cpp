@@ -141,6 +141,9 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
 		}
     }
 
+    auto paddle = new gel::GameEntity();
+	paddle->addComponent(new gel::PaddleControllerComponent());
+
     auto paddle_ring = new gel::ArcRendererComponent(4.25f, 5.0f, 16, 0.5f, (float)(M_PI * 2.0f) / 8.0f, brown_moss_texture);
     auto paddle_a = new gel::GameEntity(
         gem::Vector<float, 3> { 0.0f, -0.25f, 0.0f },
@@ -155,9 +158,12 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
     paddle_b->addComponent(paddle_ring);
+	paddle->addChild(paddle_a);
+	paddle->addChild(paddle_b);
 	
     mainScene.addEntity(paddle_a);
     mainScene.addEntity(paddle_b);
+	mainScene.addEntity(paddle);
 
     auto platform = new gel::GameEntity(
         gem::Vector<float, 3> { 0.0f, -0.5f, 0.0f },
@@ -279,6 +285,9 @@ void Application::on_mouse_move(double x, double y) {}
 void Application::on_mouse_button(int button, int action, int mods) {}
 
 void Application::on_key_pressed(int key, int scancode, int action, int mods) {
+
+	mainScene.handleKeyPressed(key, scancode, action, mods);
+
     if (action == GLFW_PRESS) {
         switch (key) {
         case GLFW_KEY_1:
