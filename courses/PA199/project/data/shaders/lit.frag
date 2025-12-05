@@ -35,6 +35,7 @@ uniform int num_point_lights;
 
 uniform vec3 unlit_color;
 uniform int use_texture;
+uniform float breakpoint;
 
 uniform sampler2D tex0;
 
@@ -86,12 +87,13 @@ void main() {
 	for(int i = 0; i < num_point_lights; i++)
 		result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
 
+    vec3 breakpoint_interp = ((1.0 - breakpoint) * vec3(0.1, 0.0, 0.0));
 	if (use_texture == 1) {
-		FragColor = vec4(result * texture(tex0, TexCoord).rgb, 1.0);
+		FragColor = vec4(result * texture(tex0, TexCoord).rgb + breakpoint_interp, 1.0);
         return;
     }
 
-	FragColor = vec4(result * unlit_color, 1.0);
+	FragColor = vec4(result * unlit_color + breakpoint_interp, 1.0);
 	
     // Debug Light
     //FragColor = vec4(result, 1.0);

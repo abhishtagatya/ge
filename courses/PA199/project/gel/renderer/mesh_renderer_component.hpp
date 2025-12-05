@@ -39,8 +39,11 @@ namespace gel {
 		MeshRendererComponent(
 			const std::vector<MeshRendererVAO>& vertices, 
 			const std::vector<unsigned int>& indices,
-			GLuint texture = 0)
-		: vertices_(vertices), indices_(indices), texture_(texture)
+			GLuint texture = 0,
+			int mesh_strength = 1
+			)
+		: vertices_(vertices), indices_(indices), texture_(texture),
+			mesh_initial_strength_(mesh_strength), mesh_current_strength_(mesh_strength)
 		{
 			static bool seeded = false;
 			if (!seeded) {
@@ -74,6 +77,13 @@ namespace gel {
 
 		const GLuint getTexture() const {
 			return texture_;
+		}
+
+		int mesh_initial_strength_;
+		int mesh_current_strength_;
+
+		void resetStrength() {
+			mesh_current_strength_ = mesh_initial_strength_;
 		}
 
 	private:

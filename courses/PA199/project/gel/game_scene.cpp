@@ -52,7 +52,7 @@ namespace gel {
 		}
 
 		for (auto* child : entity->getChildren()) {
-			recursiveUpdate(child, delta_time);
+			if (child->isEnabled()) recursiveUpdate(child, delta_time);
 		}
 	}
 
@@ -84,6 +84,8 @@ namespace gel {
 					glUniform3f(glGetUniformLocation(shader_program_, "unlit_color"), mrc_color[0], mrc_color[1], mrc_color[2]);
 					glUniform1i(glGetUniformLocation(shader_program_, "use_texture"), 0);
 				}
+
+				glUniform1f(glGetUniformLocation(shader_program_, "breakpoint"), mrc->mesh_current_strength_ / mrc->mesh_initial_strength_);
 			}
 			
 			setupLights();
@@ -91,7 +93,7 @@ namespace gel {
 		}
 
 		for (auto* child : entity->getChildren()) {
-			recursiveRender(child);
+			if (child->isEnabled()) recursiveRender(child);
 		}
 	}
 
@@ -101,13 +103,13 @@ namespace gel {
 		}
 
 		for (auto* child : entity->getChildren()) {
-			recursiveHandleKeyPressed(child, key, scancode, action, mods);
+			if (child->isEnabled()) recursiveHandleKeyPressed(child, key, scancode, action, mods);
 		}
 	}
 
 	void GameScene::update(float delta_time) {
 		for (auto* entity : entities_) {
-			recursiveUpdate(entity, delta_time);
+			if (entity->isEnabled()) recursiveUpdate(entity, delta_time);
 		}
 	}
 
@@ -123,13 +125,13 @@ namespace gel {
 		}
 
 		for (auto* entity : entities_) {
-			recursiveRender(entity);
+			if (entity->isEnabled()) recursiveRender(entity);
 		}
 	}
 
 	void GameScene::handleKeyPressed(int key, int scancode, int action, int mods) {
 		for (auto* entity : entities_) {
-			recursiveHandleKeyPressed(entity, key, scancode, action, mods);
+			if (entity->isEnabled()) recursiveHandleKeyPressed(entity, key, scancode, action, mods);
 		}
 	}
 }

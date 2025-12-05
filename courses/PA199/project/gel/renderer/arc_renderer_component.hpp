@@ -124,11 +124,12 @@ namespace gel {
 		ArcRendererComponent(
 			float inner_radius, float outer_radius, int segments,
 			float height = 1.0f, float angle = 2.0f * M_PI,
-			GLuint texture = 0
+			GLuint texture = 0,
+			int strength = 3
 		) : MeshRendererComponent(
 			GenerateArcVertices(inner_radius, outer_radius, segments, height, angle),
 			GenerateArcIndices(segments, angle >= 2.0f * M_PI),
-			texture
+			texture, strength
 		), 
 			inner_radius_(inner_radius), 
 			outer_radius_(outer_radius), 
@@ -142,6 +143,14 @@ namespace gel {
 		int segments() const { return segments_; }
 		float height() const { return height_; }
 		float angle() const { return angle_; }
+		bool breakOnCollision() {
+			if (mesh_current_strength_ > 0) {
+				mesh_current_strength_--;
+				return false;
+			}
+
+			return true;
+		}
 	private:
 		float inner_radius_;
 		float outer_radius_;

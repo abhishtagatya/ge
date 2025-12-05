@@ -18,5 +18,6 @@
 #include "control/paddle_controller_component.hpp"
 #include "physics/adhoc_paddle_broadphase_collision_component.hpp"
 #include "physics/rigidbody_component.hpp"
+#include "physics/adhoc_brick_broadphase_collision_component.hpp"
 #include "control/ball_reset_component.hpp"
 #include "game_scene.hpp"

@@ -110,7 +110,7 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
 	auto platform_circle = new gel::CircleRendererComponent(1.75f, 32, grass_texture);
 
     auto ball = new gel::GameEntity(
-		gem::Vector<float, 3> { 0.0f, -0.25f, -2.5f },
+		gem::Vector<float, 3> { 0.0f, -0.25f, 0.0f },
 		gem::Quaternion<float> { 1.0f, 0.0f, 0.0f, 0.0f },
 		gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f } * 0.5f
     );
@@ -120,26 +120,23 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
     ball->addComponent(ball_rigidbody);
 	ball->addComponent(new gel::BallResetComponent(ball->getPosition()));
 
-    int layer = 3;
+    int layer = 2;
 	int blocks_per_layer = 6;
 	float offset = 0.5f;
     float ringAngle = (float)(M_PI * 2.0f) / blocks_per_layer;
 
-    auto arcBlack = new gel::ArcRendererComponent(1.0f, 1.5f, 16, 0.5f, ringAngle, black_moss_texture);
-    auto arcGreen = new gel::ArcRendererComponent(1.0f, 1.5f, 16, 0.5f, ringAngle, green_moss_texture);
-
+	std::vector<gel::ArcRendererComponent*> arcReferences;
     for (int i = 0; i < layer; i++) {
         for (int j = 0; j < blocks_per_layer; j++) {
+            auto arcRC = new gel::ArcRendererComponent(1.0f, 1.5f, 16, 0.5f, ringAngle, (j % 2 == 0) ? green_moss_texture : black_moss_texture);
+
             auto block = new gel::GameEntity(
                 gem::Vector<float, 3> { 0.0f, -0.25f + (i * offset), 0.0f },
                 gem::AxisAngle{ (ringAngle * i) + (ringAngle * j), 0.0f, 1.0f, 0.0f }.toQuaternion(),
                 gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
             );
-
-            if (j % 2 == 0)
-                block->addComponent(arcBlack);
-			else
-                block->addComponent(arcGreen);
+			block->addComponent(arcRC);
+            arcReferences.push_back(arcRC);
 
             mainScene.addEntity(block);
 		}
@@ -204,9 +201,9 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
     thirdCamera->addComponent(cc3);
 
     auto sunLight = new gel::DirectionalLightComponent(
-        gem::Vector<float, 3> {0.2f, 0.2f, 0.2f },
-        gem::Vector<float, 3> {0.8f, 0.8f, 0.8f },
-        gem::Vector<float, 3> {1.0f, 1.0f, 1.0f }
+        gem::Vector<float, 3> {0.2f, 0.2f, 0.2f } *2.0f,
+        gem::Vector<float, 3> {0.8f, 0.8f, 0.8f } *2.0f,
+		gem::Vector<float, 3> {1.0f, 1.0f, 1.0f } *2.0f
     );
 
     auto directLight = new gel::GameEntity(
@@ -234,6 +231,10 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
     collisionManager->addComponent(new gel::AdhocPaddleBroadphaseCollisionComponent(
         ball, paddle_a, paddle_b
     ));
+    collisionManager->addComponent(new gel::AdhocBrickBroadphaseCollisionComponent(
+        ball, arcReferences,
+        blocks_per_layer, layer
+	));
 
 	mainScene.addEntity(pointLight);
 	mainScene.addExtraLight(l1);

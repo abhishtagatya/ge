@@ -14,8 +14,9 @@ namespace gel {
 
 		GameEntity(const gem::Vector<float, 3>& position,
 			const gem::Quaternion<float>& orientation,
-			const gem::Vector<float, 3>& scale)
-			: position_(position), orientation_(orientation), scale_(scale) {
+			const gem::Vector<float, 3>& scale,
+			bool enabled = true)
+			: position_(position), orientation_(orientation), scale_(scale), enabled_(enabled) {
 		}
 
 		virtual ~GameEntity() = default;
@@ -66,6 +67,9 @@ namespace gel {
 			orientation_ = orientation_.normalize();
 		}
 
+		bool isEnabled() const { return enabled_; }
+		void setEnabled(bool enabled) { enabled_ = enabled; }
+
 	private:
 		gem::Vector<float, 3> position_{ 0.0f, 0.0f, 0.0f };
 		gem::Quaternion<float> orientation_{ 1.0f, 0.0f, 0.0f, 0.0f };
@@ -75,5 +79,7 @@ namespace gel {
 		std::vector<GameEntity*> children_;
 
 		std::vector<GameComponent*> component_;
+
+		bool enabled_ = true;
 	};
 }

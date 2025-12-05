@@ -36,8 +36,11 @@ add_library(gel
 	"control/paddle_controller_component.hpp"
 	"control/paddle_controller_component.cpp"
 	"physics/adhoc_paddle_broadphase_collision_component.hpp"
+	"physics/adhoc_paddle_broadphase_collision_component.cpp"
 	"physics/rigidbody_component.hpp"
 	"control/ball_reset_component.hpp"
+	"physics/adhoc_brick_broadphase_collision_component.hpp"
+	"physics/adhoc_brick_broadphase_collision_component.cpp"
 	"gel.hpp"
 )
 
