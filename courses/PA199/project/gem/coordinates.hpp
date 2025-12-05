@@ -40,7 +40,7 @@ namespace gem {
 		}
 
 		static Polar<T> fromCartesian(const Vector<T, 3>& v) {
-			return fromCartesian(Vector<T, 2>(v[0], v[2]));
+			return fromCartesian(Vector<T, 2>{ {v[0], v[2]} });
 		}
 	};
 }

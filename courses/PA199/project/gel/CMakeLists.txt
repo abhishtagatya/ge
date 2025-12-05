@@ -35,6 +35,9 @@ add_library(gel
 	"util/shader_resource.hpp"
 	"control/paddle_controller_component.hpp"
 	"control/paddle_controller_component.cpp"
+	"physics/adhoc_paddle_broadphase_collision_component.hpp"
+	"physics/rigidbody_component.hpp"
+	"control/ball_reset_component.hpp"
 	"gel.hpp"
 )
 

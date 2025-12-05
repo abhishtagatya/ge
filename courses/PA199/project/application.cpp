@@ -115,6 +115,10 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
 		gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f } * 0.5f
     );
     ball->addComponent(ball_sphere);
+    auto ball_rigidbody = new gel::RigidbodyComponent(10.0f);
+	ball_rigidbody->applyImpulse(gem::Vector<float, 3> { 0.0f, 0.0f, 0.05f });
+    ball->addComponent(ball_rigidbody);
+	ball->addComponent(new gel::BallResetComponent(ball->getPosition()));
 
     int layer = 3;
 	int blocks_per_layer = 6;
@@ -141,29 +145,23 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
 		}
     }
 
-    auto paddle = new gel::GameEntity();
-	paddle->addComponent(new gel::PaddleControllerComponent());
-
-    auto paddle_ring = new gel::ArcRendererComponent(4.25f, 5.0f, 16, 0.5f, (float)(M_PI * 2.0f) / 8.0f, brown_moss_texture);
+    auto paddle_ring_a = new gel::ArcRendererComponent(4.25f, 5.0f, 16, 0.5f, (float)(M_PI * 2.0f) / 8.0f, brown_moss_texture);
+    auto paddle_ring_b = new gel::ArcRendererComponent(4.25f, 5.0f, 16, 0.5f, (float)(M_PI * 2.0f) / 8.0f, brown_moss_texture);
     auto paddle_a = new gel::GameEntity(
         gem::Vector<float, 3> { 0.0f, -0.25f, 0.0f },
         gem::AxisAngle{ 1.0f, 0.0f, 0.0f, 0.0f }.toQuaternion(),
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
-	paddle_a->addComponent(paddle_ring);
+	paddle_a->addComponent(paddle_ring_a);
+	paddle_a->addComponent(new gel::PaddleControllerComponent());
 
     auto paddle_b = new gel::GameEntity(
         gem::Vector<float, 3> { 0.0f, -0.25f, 0.0f },
         gem::AxisAngle{ (float)(M_PI), 0.0f, 1.0f, 0.0f}.toQuaternion(),
         gem::Vector<float, 3> { 1.0f, 1.0f, 1.0f }
     );
-    paddle_b->addComponent(paddle_ring);
-	paddle->addChild(paddle_a);
-	paddle->addChild(paddle_b);
-	
-    mainScene.addEntity(paddle_a);
-    mainScene.addEntity(paddle_b);
-	mainScene.addEntity(paddle);
+    paddle_b->addComponent(paddle_ring_b);
+	paddle_b->addComponent(new gel::PaddleControllerComponent());
 
     auto platform = new gel::GameEntity(
         gem::Vector<float, 3> { 0.0f, -0.5f, 0.0f },
@@ -231,11 +229,21 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
         gem::Vector<float, 3> {1.0f, 1.0f, 1.0f }
 	);
 	pointLight->addComponent(l1);
+
+    auto collisionManager = new gel::GameEntity();
+    collisionManager->addComponent(new gel::AdhocPaddleBroadphaseCollisionComponent(
+        ball, paddle_a, paddle_b
+    ));
+
 	mainScene.addEntity(pointLight);
 	mainScene.addExtraLight(l1);
 
 	mainScene.addEntity(ball);
 	mainScene.addEntity(platform);
+
+    mainScene.addEntity(paddle_a);
+    mainScene.addEntity(paddle_b);
+	mainScene.addEntity(collisionManager);
 
 	mainScene.addEntity(firstCamera);
     mainScene.addEntity(secondCamera);
