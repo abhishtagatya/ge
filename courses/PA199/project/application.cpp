@@ -195,7 +195,7 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
         gem::Vector<float, 3> {1.0f, 1.0f, 1.0f }
     );
     auto cc3 = new gel::CameraComponent(
-        90.0f, width / height, 0.1f, 1000.0f
+        2.0f, width / height, 0.1f, 1000.0f, true
     );
     cc3->targetEntity = platform;
     thirdCamera->addComponent(cc3);
@@ -250,8 +250,10 @@ Application::Application(int initial_width, int initial_height, std::vector<std:
     mainScene.addEntity(secondCamera);
 	mainScene.addEntity(thirdCamera);
 
-	mainScene.setMainCamera(firstCamera);
+	mainScene.setMainCamera(secondCamera);
 	mainScene.setMainLight(sunLight);
+
+    mainScene.getMainCamera()->setAspectRatio(float(width) / float(height));
 }
 
 Application::~Application()
